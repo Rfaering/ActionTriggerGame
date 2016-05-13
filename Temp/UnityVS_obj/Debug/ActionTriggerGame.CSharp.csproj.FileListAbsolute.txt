@@ -1,0 +1,1 @@
+C:\Test\ActionTriggerGame\Temp\UnityVS_obj\Debug\ActionTriggerGame.CSharp.csprojResolveAssemblyReference.cache

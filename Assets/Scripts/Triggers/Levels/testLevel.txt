@@ -1,0 +1,1 @@
+{"Rows":1,"Columns":3,"Tiles":[{"Locked":true,"Triggers":["Start"],"Actions":["Kill"]},{"Locked":false,"Triggers":["Left"],"Actions":["Kill"]},{"Locked":true,"Triggers":["Left"],"Actions":["Win"]}]}

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionTriggerGame.CSharp", "ActionTriggerGame.CSharp.csproj", "{DA2D9FFD-4F1C-251A-E8B1-251884A6BD6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActionTriggerGame.CSharp.Editor", "ActionTriggerGame.CSharp.Editor.csproj", "{9D589594-9866-358A-0991-E8DCA6199778}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA2D9FFD-4F1C-251A-E8B1-251884A6BD6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA2D9FFD-4F1C-251A-E8B1-251884A6BD6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA2D9FFD-4F1C-251A-E8B1-251884A6BD6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA2D9FFD-4F1C-251A-E8B1-251884A6BD6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D589594-9866-358A-0991-E8DCA6199778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D589594-9866-358A-0991-E8DCA6199778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D589594-9866-358A-0991-E8DCA6199778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D589594-9866-358A-0991-E8DCA6199778}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
