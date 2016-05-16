@@ -1,6 +1,4 @@
 ﻿using Assets.Scripts.Misc;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.Triggers
 {

@@ -4,8 +4,8 @@ namespace Assets.Scripts.UI
 {
     public class DesignPanels : MonoBehaviour
     {
-        public bool IsPanelOpen { get { return Panel != null; } }
-        public GameObject Panel { get; set; }
+        public bool IsOverlayOpen { get { return Overlay != null; } }
+        public GameObject Overlay { get; set; }
 
         public void OpenSave()
         {
@@ -19,23 +19,23 @@ namespace Assets.Scripts.UI
 
         public void Update()
         {
-            if (IsPanelOpen && Input.GetKeyDown(KeyCode.Escape))
+            if (IsOverlayOpen && Input.GetKeyDown(KeyCode.Escape))
             {
                 CloseActiveOverlay();
             }
         }
 
-        private void CloseActiveOverlay()
+        public void CloseActiveOverlay()
         {
-            Panel.SetActive(false);
-            Panel = null;
+            Overlay.SetActive(false);
+            Overlay = null;
         }
 
         private void FindAndOpenSavePanel( string overlayName )
         {
-            var savePanel = this.gameObject.transform.FindChild(overlayName).gameObject;
+            var savePanel = gameObject.transform.FindChild(overlayName).gameObject;
             savePanel.SetActive(true);
-            Panel = savePanel;
+            Overlay = savePanel;
         }        
     }
 }

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Assets.Scripts;
 using UnityEngine.UI;
 using Assets.Scripts.Tiles;
 using Assets.Scripts.Misc;
 using Assets.Scripts.UI;
+using Assets;
 
 public class Runner : MonoBehaviour {
     private Coroutine _activeCoroutine;
@@ -16,6 +16,7 @@ public class Runner : MonoBehaviour {
         set
         {
             SetNewRuntimeMode(value);
+            Globals.DesignPanel.Get().gameObject.SetActive(value == BuilderMode.DesignMode);
             _runtimeMode = value;
         }
     }    
@@ -27,26 +28,24 @@ public class Runner : MonoBehaviour {
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (!Globals.IsDesignPanelOpen())
         {
-            if( _activeCoroutine != null)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                StopRunning();
+                if (_activeCoroutine != null)
+                {
+                    StopRunning();
+                }
+                else
+                {
+                    StartRunning();
+                }
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.S))
             {
-                StartRunning();
+                RuntimeMode = RuntimeMode == BuilderMode.DesignMode ? BuilderMode.Running : BuilderMode.DesignMode;
             }
-        }
-
-        if( Input.GetKeyDown( KeyCode.Q ) )
-        {
-            RuntimeMode = RuntimeMode == BuilderMode.DesignMode ? BuilderMode.Running : BuilderMode.DesignMode;
-        }
-
-        if ( Input.GetKeyDown(KeyCode.S) )
-        {
-            RuntimeMode = RuntimeMode == BuilderMode.DesignMode ? BuilderMode.Running : BuilderMode.DesignMode;
         }
     }
 

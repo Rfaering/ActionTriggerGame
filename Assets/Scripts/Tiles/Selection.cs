@@ -1,52 +1,57 @@
 ﻿using UnityEngine;
 using Assets.Scripts.UI;
+using Assets;
 
 public class Selection : MonoBehaviour {    
     public void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!Globals.IsDesignPanelOpen())
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+            if (Input.GetMouseButtonDown(0))
             {
-                if (hit.transform.gameObject == this.gameObject)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, Mathf.Infinity))
                 {
-                    Selected = true;
+                    if (hit.transform.gameObject == this.gameObject)
+                    {
+                        Selected = true;
+                    }
+                    else
+                    {
+                        Selected = false;
+                    }
                 }
-                else
+            }
+
+            if (Selected)
+            {
+                if (Input.GetKeyDown(KeyCode.UpArrow) && GetComponent<Position>().Up != null)
                 {
-                    Selected = false;
+                    GiveTileSelection(GetComponent<Position>().Up);
+                }
+                if (Input.GetKeyDown(KeyCode.DownArrow) && GetComponent<Position>().Down != null)
+                {
+                    GiveTileSelection(GetComponent<Position>().Down);
+                }
+                if (Input.GetKeyDown(KeyCode.LeftArrow) && GetComponent<Position>().Left != null)
+                {
+                    GiveTileSelection(GetComponent<Position>().Left);
+                }
+                if (Input.GetKeyDown(KeyCode.RightArrow) && GetComponent<Position>().Right != null)
+                {
+                    GiveTileSelection(GetComponent<Position>().Right);
                 }
             }
-        }
-
-        if ( Selected )
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && GetComponent<Position>().Up != null)
-            {
-                GiveTileSelection(GetComponent<Position>().Up);
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow) && GetComponent<Position>().Down != null)
-            {
-                GiveTileSelection(GetComponent<Position>().Down);
-            }
-            if (Input.GetKeyDown(KeyCode.LeftArrow) && GetComponent<Position>().Left != null)
-            {
-                GiveTileSelection(GetComponent<Position>().Left);
-            }
-            if (Input.GetKeyDown(KeyCode.RightArrow) && GetComponent<Position>().Right != null)
-            {
-                GiveTileSelection(GetComponent<Position>().Right);
-            }
-        }
 
 
-        if (_gotSelectionFromKeyboardNavigation)
-        {
-            Selected = true;
-            _gotSelectionFromKeyboardNavigation = false;
+            if (_gotSelectionFromKeyboardNavigation)
+            {
+                Selected = true;
+                _gotSelectionFromKeyboardNavigation = false;
+            }
         }
+        
     }
 
     private void GiveTileSelection(GameObject gameObject)

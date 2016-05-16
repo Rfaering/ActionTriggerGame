@@ -17,7 +17,7 @@ public class CreateTilesButton : Editor
 
         if (GUILayout.Button("Save Game"))
         {
-            myScript.SaveWorld();
+            myScript.SaveLevelFromComponent();
         }
         
         DrawDefaultInspector();

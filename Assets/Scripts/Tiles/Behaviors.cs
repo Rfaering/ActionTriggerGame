@@ -10,12 +10,10 @@ namespace Assets.Scripts.Tiles
     public class Behaviors : MonoBehaviour
     {
         public Trigger[] AllTriggers = new Trigger[0];
-        public Actions.Action[] AllActions = new Actions.Action[0];
+        public Action[] AllActions = new Action[0];
 
         public bool Active { get; set; }
         public bool StartTrigger;
-
-        private TileData _tileData;
 
         public void Start()
         {
@@ -53,7 +51,7 @@ namespace Assets.Scripts.Tiles
         {
             var position = GetComponent<Position>();
 
-            if (AllTriggers.Where(x => x.Active).Any(x => x.Check()))
+            if (AllTriggers.Where(x => x.Active).Any( x => x.Check() ))
             {
                 Active = true;
             }
@@ -63,7 +61,7 @@ namespace Assets.Scripts.Tiles
         {
             if (Active)
             {
-                foreach (var item in AllActions.Where(x => x.Active))
+                foreach (var item in AllActions.Where( x => x.Active ))
                 {
                     item.Execute(gameObject);
                 }
