@@ -11,7 +11,7 @@ namespace Assets.Scripts.Utils
         //public static string LevelsDirectory = Path.Combine(Application.persistentDataPath, "Levels");
 
         public static string[] GetLevels()
-        {
+        {            
             TextAsset[] txts = Resources.LoadAll<TextAsset>("Levels");
             return txts.Select(x => x.name).ToArray();
         }

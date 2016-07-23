@@ -7,7 +7,6 @@ using Assets.Scripts.Misc;
 using Assets.Scripts.World.Tile;
 using Assets.Scripts.Tile;
 using Assets.Scripts.Canvas.Elements;
-using UnityEditor;
 
 namespace Assets.Scripts.World
 {
@@ -57,10 +56,6 @@ namespace Assets.Scripts.World
                     writer.Write(content);
                 }
             }
-
-#if UNITY_STANDALONE_WIN
-            AssetDatabase.Refresh();
-#endif
 
             FindObjectOfType<LevelsDropdown>().PopulateOptions();
         }
