@@ -24,13 +24,13 @@ namespace Assets.Scripts.World
 
         public void LoadCurrentLevel()
         {
-            var levelPath = Resources.Load<TextAsset>(@"Levels/" + CurrentLevelName);
+            var levelPath = LevelsInfo.GetLevel(CurrentLevelName);
 
             var createTiles = GetComponent<CreateTiles>();
 
             if (levelPath != null)
             {
-                var levelData = JsonUtility.FromJson<LevelData>(levelPath.text);
+                var levelData = JsonUtility.FromJson<LevelData>(levelPath);
 
                 createTiles.rows = levelData.Rows;
                 createTiles.columns = levelData.Columns;
@@ -54,11 +54,17 @@ namespace Assets.Scripts.World
                     SetRuntimeButtonLayouts(BehaviorTypes.Triggers);
                 }
                 else
-                {
+                {                    
                     SetDesignModeButtonLayout(BehaviorTypes.Actions);
                     SetDesignModeButtonLayout(BehaviorTypes.Triggers);
                 }
             }
+        }
+
+        private void SetButtonCount(int count, BehaviorTypes type)
+        {
+            var createButtons = FindObjectOfType<CreateButtons>();            
+            createButtons.BuildObject(type, count);
         }
 
         private void SetCorrectStateOnTiles(LevelData levelData)
@@ -112,17 +118,15 @@ namespace Assets.Scripts.World
 
         private void SetRuntimeButtonLayouts(BehaviorTypes type)
         {
-            var behaviors = GetComponentsInChildren<Behaviors>();
-            if (behaviors == null)
-            {
-                return;
-            }
+            var behaviors = GetComponentsInChildren<Behaviors>() ?? new Behaviors[0];            
 
             var actionBehaviors = behaviors
                 .SelectMany(x => x.GetBehaviorList(type))
                 .Where(x => x.Available)
                 .DistinctBy(x => x.Name)
                 .ToArray();
+
+            SetButtonCount(actionBehaviors.Count(), type);
 
             _menu.SetOptions(actionBehaviors, type);
         }
@@ -131,6 +135,8 @@ namespace Assets.Scripts.World
         {
             var behavior = GetComponentInChildren<Behaviors>();
             var actionBehaviors = behavior.GetBehaviorList(type).ToArray();
+
+            SetButtonCount(actionBehaviors.Count(), type);
 
             _menu.SetOptions(actionBehaviors, type);
         }

@@ -22,8 +22,7 @@ namespace Assets.Scripts.Utils
 
         public void ClearImages(string underPath)
         {
-            var gameObjectInQuestion = transform.Find(underPath);
-
+            var gameObjectInQuestion = transform.Find(underPath);            
             foreach (var item in gameObjectInQuestion.GetComponentsInChildren<Image>(true))
             {
                 if (item.name != underPath)

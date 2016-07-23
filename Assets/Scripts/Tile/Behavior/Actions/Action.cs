@@ -23,6 +23,7 @@ namespace Assets.Scripts.Actions
         public override void ClearUI(GameObject gameobject)
         {
             gameobject.GetComponent<ImageSetter>().ClearImages("Action");
+            _owner.transform.Find("Action").localScale = new Vector3(2, 2, 2);
         }
 
 

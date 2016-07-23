@@ -30,11 +30,15 @@ public class Runner : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
 
         var level = GlobalGameObjects.World.Get().GetComponent<LoadLevel>();
-        level.CurrentLevelName = "Level 1";
+        level.CurrentLevelName = "Level 001";
         level.LoadCurrentLevel();
 
 
 #if UNITY_ANDROID
+        _buildMode.RuntimeMode = BuilderMode.Running;
+#endif
+
+#if UNITY_IOS
         _buildMode.RuntimeMode = BuilderMode.Running;
 #endif
 

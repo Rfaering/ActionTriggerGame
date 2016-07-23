@@ -23,5 +23,11 @@ namespace Assets.Scripts.Actions
         {
             gameObject.GetComponent<Position>().Death = true;
         }
+
+        public override void UpdateUI(GameObject gameobject)
+        {
+            gameobject.transform.Find("Action").localScale = new Vector3(1.25f, 1.25f, 1.25f);
+            base.UpdateUI(gameobject);
+        }
     }
 }

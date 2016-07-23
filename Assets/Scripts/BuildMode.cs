@@ -33,9 +33,6 @@ namespace Assets.Scripts
 
         private void SetNewRuntimeMode(BuilderMode value)
         {
-            var createButtons = FindObjectOfType<CreateButtons>();
-            createButtons.buttons = value == BuilderMode.DesignMode ? 16 : 5;
-            createButtons.BuildObject();
             GlobalGameObjects.DesignPanel.Get().GetComponent<DesignPanelVisibility>().SetVisibility(value == BuilderMode.DesignMode);
 
             foreach (var visibility in GlobalGameObjects.World.Get().GetComponentsInChildren<Visibility>(true))

@@ -9,17 +9,31 @@ namespace Assets.Scripts.World
     {
         public GameObject obj;
 
-        public int buttons = 5;
+        public int buttons = 6;
 
         public void BuildObject()
         {
             Destroy("Actions");
             Destroy("Triggers");
-            Create("Triggers", BehaviorTypes.Triggers);
-            Create("Actions", BehaviorTypes.Actions);
+            Create("Triggers", BehaviorTypes.Triggers, buttons);
+            Create("Actions", BehaviorTypes.Actions, buttons);
         }
 
-        private void Create(string underChild, BehaviorTypes buttonType)
+        public void BuildObject(BehaviorTypes type, int count)
+        {
+            if (type == BehaviorTypes.Actions)
+            {
+                Destroy("Actions");
+                Create("Actions", BehaviorTypes.Actions, count);
+            }
+            else
+            {
+                Destroy("Triggers");
+                Create("Triggers", BehaviorTypes.Triggers, count);
+            }
+        }
+
+        private void Create(string underChild, BehaviorTypes buttonType, int count)
         {
             Vector3 position;
 
@@ -34,20 +48,33 @@ namespace Assets.Scripts.World
 
             var canvasMenu = GetComponent<CanvasMenu>();
             List<GameObject> gameObjects = new List<GameObject>();
-            for (int i = 0; i < buttons; i++)
+            for (int i = 0; i < count; i++)
             {
                 GameObject button;
-                if (buttons <= 5)
+                if (count <= 5)
                 {
-                    button = Instantiate(obj, position + new Vector3(0, -100f * i + 200, 0), Quaternion.Euler(Vector3.zero)) as GameObject;
-                    button.transform.SetParent(this.transform.FindChild(underChild).transform, true);
+                    button = Instantiate(obj) as GameObject;
+                    button.transform.SetParent(this.transform.FindChild(underChild).transform);
                     button.transform.localScale = new Vector3(1, 1, 1);
+                    button.transform.localPosition = new Vector3(0, -75f * i - 50, 0);
+                }
+                else if (count > 5 && count < 9)
+                {
+                    var offSet = buttonType == BehaviorTypes.Actions ? 12.5f : -12.5f;
+
+                    button = Instantiate(obj) as GameObject;
+                    button.transform.SetParent(this.transform.FindChild(underChild).transform);
+                    button.transform.localScale = new Vector3(0.75f, 0.75f, 1);
+                    button.transform.localPosition = new Vector3(offSet, -50f * i - 40, 0);
                 }
                 else
                 {
-                    button = Instantiate(obj, position + new Vector3(-25 + 50 * (i % 2), -50f * Mathf.CeilToInt(i / 2) + 200, 0), Quaternion.Euler(Vector3.zero)) as GameObject;
+                    var offSet = buttonType == BehaviorTypes.Actions ? -37.5f : -12.5f;
+
+                    button = Instantiate(obj) as GameObject;
                     button.transform.SetParent(this.transform.FindChild(underChild).transform, true);
-                    button.transform.localScale = new Vector3(0.5f, 0.5f, 1);
+                    button.transform.localScale = new Vector3(0.75f, 0.75f, 1);
+                    button.transform.localPosition = new Vector3(offSet + 50 * (i % 2), -50f * Mathf.CeilToInt(i / 2) - 70f, 0);
                 }
 
                 gameObjects.Add(button);

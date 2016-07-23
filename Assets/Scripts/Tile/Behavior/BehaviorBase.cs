@@ -91,7 +91,7 @@ namespace Assets.Scripts.Misc
         }
 
         public void ClearUI()
-        {
+        {            
             ClearUI(_owner);
         }
 

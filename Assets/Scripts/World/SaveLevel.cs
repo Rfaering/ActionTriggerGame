@@ -49,6 +49,7 @@ namespace Assets.Scripts.World
 
             var content = JsonUtility.ToJson(levelData);
 
+            
             using (FileStream fs = new FileStream("Assets/Resources/Levels/" + SaveLevelName + ".txt", FileMode.Create))
             {
                 using (StreamWriter writer = new StreamWriter(fs))

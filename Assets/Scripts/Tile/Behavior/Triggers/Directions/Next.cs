@@ -31,6 +31,10 @@ namespace Assets.Scripts.Triggers
                     return Check(position.Up) && Check(position.Down);
                 case Direction.LeftRight:
                     return Check(position.Left) && Check(position.Right);
+                case Direction.LeftUp:
+                    return Check(position.Left) && Check(position.Up);
+                case Direction.RightDown:
+                    return Check(position.Right) && Check(position.Down);
             }
 
             return false;
