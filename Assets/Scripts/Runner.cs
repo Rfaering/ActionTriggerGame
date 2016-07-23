@@ -1,0 +1,214 @@
+﻿using UnityEngine;
+using System.Collections;
+using System.Linq;
+using Assets.Scripts.Misc;
+using Assets.Scripts.Actions;
+using Assets.Scripts;
+using Assets.Scripts.Utils;
+using Assets.Scripts.Canvas.Elements;
+using Assets.Scripts.World.Tile;
+using Assets.Scripts.Tile;
+using Assets.Scripts.Stats;
+using Assets.Scripts.World;
+
+public class Runner : MonoBehaviour
+{
+    private Coroutine _activeCoroutine;
+    private BuildMode _buildMode;
+
+    // Use this for initialization
+    void Start()
+    {
+        StopRunning();
+        StartCoroutine(LateStart(0.1f));
+        _buildMode = GetComponent<BuildMode>();
+    }
+
+
+    IEnumerator LateStart(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+
+        var level = GlobalGameObjects.World.Get().GetComponent<LoadLevel>();
+        level.CurrentLevelName = "Level 1";
+        level.LoadCurrentLevel();
+
+
+#if UNITY_ANDROID
+        _buildMode.RuntimeMode = BuilderMode.Running;
+#endif
+
+#if UNITY_STANDALONE_WIN
+        _buildMode.RuntimeMode = BuilderMode.DesignMode;
+#endif        
+    }
+
+    void Update()
+    {
+        if (!GlobalProperties.IsOverlayPanelOpen())
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                if (_activeCoroutine != null)
+                {
+                    StopRunning();
+                }
+                else
+                {
+                    StartRunning();
+                }
+            }
+
+        }
+    }
+
+    public bool IsRunning()
+    {
+        return _activeCoroutine != null;
+    }
+
+    public void ToggleRunning()
+    {
+        if (_activeCoroutine == null)
+        {
+            StartRunning();
+        }
+        else
+        {
+            StopRunning();
+        }
+    }
+
+    private void StartRunning()
+    {
+        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>().SetProgress(true);
+        _activeCoroutine = StartCoroutine(BeginRuntimeMode());
+    }
+
+    public void StopRunning()
+    {
+        if (_activeCoroutine != null)
+        {
+            StopCoroutine(_activeCoroutine);
+        }
+        _activeCoroutine = null;
+
+        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>().SetProgress(false);
+
+        ResetVisualState();
+    }
+
+    IEnumerator BeginRuntimeMode()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(0.5f);
+            var overlayManager = GlobalGameObjects.OverlayManager.Get().GetComponent<OverlayManager>();
+            if (!overlayManager.IsOverlayOpen)
+            {
+                // Only run win condition if the game is not in build mode
+                if (!GlobalProperties.IsInBuildMode())
+                {
+                    if (IsWinConditionMet())
+                    {
+                        overlayManager.OpenWinnerOverlay();
+                        GetComponent<GameStatistics>().StopLevelRecording();
+                    }
+                    else if (IsLoosingConditionMet())
+                    {
+                        overlayManager.OpenLooseOverlay();
+                    }
+                }
+
+                RunSingleRound();
+            }
+        }
+    }
+
+    public bool IsBoardStateGoingToWin()
+    {
+        return NumberOfMovesToWinningState() != -1;
+    }
+
+    public int NumberOfMovesToWinningState()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            bool winCondition = IsWinConditionMet();
+            if (winCondition)
+            {
+                ResetVisualState();
+                return i;
+            }
+
+            RunSingleRound();
+        }
+
+        ResetVisualState();
+        return -1;
+    }
+
+
+    private void RunSingleRound()
+    {
+        var components = GetComponentsInChildren<Behaviors>();
+        foreach (var item in components)
+        {
+            item.UpdateTrigger();
+        }
+
+        foreach (var item in components)
+        {
+            if (!item.GetComponent<Position>().Death)
+            {
+                item.UpdateActions();
+            }
+        }
+    }
+
+    private bool IsWinConditionMet()
+    {
+        var components = GetComponentsInChildren<Behaviors>();
+
+        // Check win conditions
+        var activeWinCondition = components
+            .Select(x => x.GetAction<Win>())
+            .Where(x => x.Active)
+            .ToArray();
+
+        if (activeWinCondition.Any(x => x.Done))
+        {
+            return activeWinCondition.All(x => x.Done);
+        }
+
+        return false;
+    }
+
+    private bool IsLoosingConditionMet()
+    {
+        var components = GetComponentsInChildren<Behaviors>();
+
+        // Check win conditions
+        var activeWinCondition = components
+            .Select(x => x.GetAction<Win>())
+            .Where(x => x.Active)
+            .ToArray();
+
+        if (activeWinCondition.Any(x => x.Done))
+        {
+            return !activeWinCondition.All(x => x.Done);
+        }
+
+        return false;
+    }
+
+    private void ResetVisualState()
+    {
+        var behaviors = GetComponentsInChildren<Behaviors>();
+        foreach (var item in behaviors)
+        {
+            item.ResetUI();
+            item.gameObject.GetComponent<Animation>().Play("Reset", PlayMode.StopAll);
+        }
+    }
+}
