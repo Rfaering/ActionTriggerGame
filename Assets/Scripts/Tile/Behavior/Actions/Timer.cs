@@ -15,9 +15,8 @@ namespace Assets.Scripts.Actions
 
         public override void Execute(GameObject gameObject)
         {
-            _owner.transform
-                .Find("Foreground")
-                .Find("Action/ActionIcon")
+            _owner.transform                
+                .Find("Action/Full")
                 .GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Icons/" + (Counter > 0 ? Counter.ToString() : "skull"));
 
             if (Counter == 0)
