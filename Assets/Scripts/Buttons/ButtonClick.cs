@@ -106,11 +106,11 @@ namespace Assets.Scripts.Buttons
             var currentBehavior = CurrentBehavior;
             if (currentBehavior == null || !currentBehavior.Available)
             {
-                this.GetComponent<Image>().color = Color.gray;
+                GetComponent<ButtonEnabled>().ContentEnabled = false;
             }
             else
             {
-                this.GetComponent<Image>().color = Color.white;
+                GetComponent<ButtonEnabled>().ContentEnabled = true;
             }
         }
 

@@ -23,13 +23,13 @@ namespace Assets.Scripts.Triggers
 
         public override void ClearUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().ClearImages("Trigger");
+            gameobject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Triggers);
         }
         
 
         public override void UpdateUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Full", Icon);
+            //gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Full", Icon);
         }
     }
 }

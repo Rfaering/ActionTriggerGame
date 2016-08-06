@@ -163,7 +163,7 @@ public class Runner : MonoBehaviour
 
         foreach (var item in components)
         {
-            if (!item.GetComponent<Position>().Death)
+            if (!item.GetComponent<WaterState>().Watered)
             {
                 item.UpdateActions();
             }
@@ -176,7 +176,7 @@ public class Runner : MonoBehaviour
 
         // Check win conditions
         var activeWinCondition = components
-            .Select(x => x.GetAction<Win>())
+            .Select(x => x.GetAction<Flower>())
             .Where(x => x.Active)
             .ToArray();
 
@@ -194,7 +194,7 @@ public class Runner : MonoBehaviour
 
         // Check win conditions
         var activeWinCondition = components
-            .Select(x => x.GetAction<Win>())
+            .Select(x => x.GetAction<Flower>())
             .Where(x => x.Active)
             .ToArray();
 

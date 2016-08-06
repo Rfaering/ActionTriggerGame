@@ -1,7 +1,10 @@
-﻿using Assets.Scripts.Tile;
+﻿using Assets.Scripts.Actions;
+using Assets.Scripts.Tile;
 using Assets.Scripts.Utils;
 using Assets.Scripts.World.Tile;
 using UnityEngine;
+using System.Linq;
+using Assets.Scripts.Tile.Behavior;
 
 namespace Assets.Scripts.Triggers
 {
@@ -11,30 +14,33 @@ namespace Assets.Scripts.Triggers
         {
         }
 
-        public abstract Direction TriggerDirection { get; }
+        public abstract Direction[] WaterDirections { get; }
 
         public override bool Check()
+        {            
+            if (_owner.GetComponent<Behaviors>().GetAction<Water>().Active)
+            {
+                return true;
+            }
+
+            var waterCommingFromAnyDirection = WaterDirections.Any(IsWaterCommingFromDirection);
+            return waterCommingFromAnyDirection;
+        }
+
+        private bool IsWaterCommingFromDirection(Direction waterDirection)
         {
             var position = _owner.GetComponent<Position>();
 
-            switch (TriggerDirection)
+            switch (waterDirection)
             {
                 case Direction.Up:
-                    return Check(position.Up);
+                    return Check(position.Up, Direction.Down);
                 case Direction.Down:
-                    return Check(position.Down);
+                    return Check(position.Down, Direction.Up);
                 case Direction.Left:
-                    return Check(position.Left);
+                    return Check(position.Left, Direction.Right);
                 case Direction.Right:
-                    return Check(position.Right);
-                case Direction.UpDown:
-                    return Check(position.Up) && Check(position.Down);
-                case Direction.LeftRight:
-                    return Check(position.Left) && Check(position.Right);
-                case Direction.LeftUp:
-                    return Check(position.Left) && Check(position.Up);
-                case Direction.RightDown:
-                    return Check(position.Right) && Check(position.Down);
+                    return Check(position.Right, Direction.Left);
             }
 
             return false;
@@ -42,18 +48,20 @@ namespace Assets.Scripts.Triggers
 
         public override void UpdateUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Middle", Resources.Load<Sprite>("Icons/skull"));
         }
 
-        private bool Check(GameObject gameObject)
+        private bool Check(GameObject gameObject, Direction waterCommingFromDirection)
         {
             if (gameObject != null)
             {
-                var position = gameObject.GetComponent<Position>();
-                if (position.Death)
+                var waterState = gameObject.GetComponent<WaterState>();
+                var selectedBehavior = gameObject.GetComponent<SelectedBehavior>().SelectedTrigger as Next;
+                if (selectedBehavior == null)
                 {
-                    return true;
+                    return false;
                 }
+
+                return (waterState.Watered) && selectedBehavior.WaterDirections.Any(x => x == waterCommingFromDirection);
             }
             return false;
         }

@@ -22,14 +22,13 @@ namespace Assets.Scripts.Actions
 
         public override void ClearUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().ClearImages("Action");
-            _owner.transform.Find("Action").localScale = new Vector3(2, 2, 2);
+            gameobject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
         }
-
 
         public override void UpdateUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().SetImage("Action/Full", Icon);
+            // todo fix
+            //gameobject.GetComponent<ImageSetter>().SetImage("Action/Full", Icon);
         }
     }
 }

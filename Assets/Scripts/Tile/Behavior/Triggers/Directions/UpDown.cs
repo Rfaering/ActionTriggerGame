@@ -1,8 +1,7 @@
-﻿using Assets.Scripts.Triggers;
-using Assets.Scripts.Utils;
+﻿using Assets.Scripts.Utils;
 using UnityEngine;
 
-namespace Assets.Scripts.Tile.Behavior.Triggers.Directions
+namespace Assets.Scripts.Triggers
 {
     public class UpDown : Next
     {
@@ -10,18 +9,17 @@ namespace Assets.Scripts.Tile.Behavior.Triggers.Directions
         {
         }
 
-        public override Direction TriggerDirection
+        public override Direction[] WaterDirections
         {
             get
             {
-                return Direction.UpDown;
+                return new[] { Direction.Up, Direction.Down };
             }
         }
 
         public override void UpdateUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Up", Resources.Load<Sprite>("Icons/Up"));
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Down", Resources.Load<Sprite>("Icons/Down"));
+            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Straight, ImageSetter.Angle.Down);
             base.UpdateUI(gameobject);
         }
     }

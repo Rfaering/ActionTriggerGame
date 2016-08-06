@@ -34,18 +34,7 @@ namespace Assets.Scripts.World
         }
 
         private void Create(string underChild, BehaviorTypes buttonType, int count)
-        {
-            Vector3 position;
-
-            if (buttonType == BehaviorTypes.Triggers)
-            {
-                position = this.transform.FindChild(underChild).transform.position;
-            }
-            else
-            {
-                position = this.transform.FindChild(underChild).transform.position;
-            }
-
+        {            
             var canvasMenu = GetComponent<CanvasMenu>();
             List<GameObject> gameObjects = new List<GameObject>();
             for (int i = 0; i < count; i++)

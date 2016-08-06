@@ -6,17 +6,17 @@ namespace Assets.Scripts.Tile
 {
     public class Selection : MonoBehaviour
     {
-        private Position _position;
+        private WaterState _waterState;
 
         void Start()
         {
-            _position = GetComponent<Position>();
+            _waterState = GetComponent<WaterState>();
         }
 
 
         public void Update()
         {
-            if (!GetComponent<Animation>().isPlaying && !_position.Death)
+            if (!GetComponent<Animation>().isPlaying && !_waterState.Watered)
             {
                 UpdateColor();
             }
@@ -116,7 +116,7 @@ namespace Assets.Scripts.Tile
             }
             else
             {
-                if (!_position.Death)
+                if (!_waterState.Watered)
                 {
                     gameObject.transform.Find("Foreground").GetComponent<SpriteRenderer>().color = new Color(0.7f, 0.7f, 0.7f);
                 }

@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Actions;
 using Assets.Scripts.Misc;
 using Assets.Scripts.Tile;
-using Assets.Scripts.Tile.Behavior.Triggers.Directions;
 using Assets.Scripts.Triggers;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +34,8 @@ namespace Assets.Scripts.World.Tile
                 _active = value;
                 if (!_active)
                 {
-                    GetComponent<Position>().Death = false;
-                    var win = GetComponent<Behaviors>().GetAction<Win>();
+                    GetComponent<WaterState>().Watered = false;
+                    var win = GetComponent<Behaviors>().GetAction<Flower>();
                     if (win != null)
                     {
                         win.Done = false;
@@ -79,22 +78,19 @@ namespace Assets.Scripts.World.Tile
         {
             AllTriggers = new Trigger[]
             {
-                new Start(gameObject),
-                new Up(gameObject),
-                new Down(gameObject),
-                new Left(gameObject),
-                new Right(gameObject),
-                new LeftRight(gameObject),
                 new UpDown(gameObject),
-                new RightDown(gameObject),
+                new LeftRight(gameObject),
+                new UpRight(gameObject),
+                new DownLeft(gameObject),
                 new LeftUp(gameObject),
+                new RightDown(gameObject),
             };
 
             AllActions = new Action[]
             {
-                new Kill(gameObject),
-                new Win(gameObject),
-                new Timer(gameObject),
+                new Water(gameObject),
+                new Flower(gameObject),
+                //new Timer(gameObject),
             };
         }
 
@@ -139,7 +135,7 @@ namespace Assets.Scripts.World.Tile
 
         public bool HasActiveWinCondition()
         {
-            return GetAction<Win>().Active;
+            return GetAction<Flower>().Active;
         }
 
         public void UpdateTrigger()
@@ -158,6 +154,8 @@ namespace Assets.Scripts.World.Tile
                 {
                     item.Execute(gameObject);
                 }
+
+                GetComponent<WaterState>().Watered = true;
             }
         }
     }

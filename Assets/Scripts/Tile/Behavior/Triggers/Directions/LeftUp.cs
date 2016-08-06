@@ -1,8 +1,11 @@
-﻿using Assets.Scripts.Triggers;
-using Assets.Scripts.Utils;
+﻿using Assets.Scripts.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 
-namespace Assets.Scripts.Tile.Behavior.Triggers.Directions
+namespace Assets.Scripts.Triggers
 {
     public class LeftUp : Next
     {
@@ -10,18 +13,17 @@ namespace Assets.Scripts.Tile.Behavior.Triggers.Directions
         {
         }
 
-        public override Direction TriggerDirection
+        public override Direction[] WaterDirections
         {
             get
             {
-                return Direction.LeftUp;
+                return new[] { Direction.Left, Direction.Up };
             }
         }
 
         public override void UpdateUI(GameObject gameobject)
         {
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Left", Resources.Load<Sprite>("Icons/Left"));
-            gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Up", Resources.Load<Sprite>("Icons/Up"));
+            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Turn, ImageSetter.Angle.Right);
             base.UpdateUI(gameobject);
         }
     }

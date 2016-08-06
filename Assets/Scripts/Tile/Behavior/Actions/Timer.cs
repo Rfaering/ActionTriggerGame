@@ -21,7 +21,7 @@ namespace Assets.Scripts.Actions
 
             if (Counter == 0)
             {
-                gameObject.GetComponent<Position>().Death = true;
+                gameObject.GetComponent<WaterState>().Watered = true;
             }
 
             Counter--;

@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.Misc;
 using Assets.Scripts.Utils;
-using Assets.Scripts.World.Tile;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +11,9 @@ namespace Assets.Scripts.Buttons
         {
             behavior.ClearUI(gameObject);
             behavior.UpdateUI(gameObject);
-            this.gameObject.SetActive(true);
+            gameObject.SetActive(true);
             gameObject.name = behavior.Name;
-            this.GetComponent<Image>().color = Color.gray;
+            GetComponent<ButtonEnabled>().ContentEnabled = false;
         }
     }
 }
