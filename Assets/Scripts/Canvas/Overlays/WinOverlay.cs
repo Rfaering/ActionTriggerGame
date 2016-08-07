@@ -19,7 +19,7 @@ namespace Assets.Scripts.Canvas.Overlays
 
         public void SetNumberOfLevels(int numbers)
         {
-            int counter = 0;
+            int counter = 1;
             foreach (var image in transform.Find("Progress").GetComponentsInChildren<Image>())
             {
                 if (counter == numbers)

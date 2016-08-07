@@ -8,7 +8,7 @@ namespace Assets.Scripts.Levels
 {
     public class LevelInfoManager : MonoBehaviour
     {
-        int groupSize = 5;
+        int groupSize = 6;
 
         private class LevelInfo
         {
@@ -25,7 +25,7 @@ namespace Assets.Scripts.Levels
         public void ShowWinForCurrentLevel()
         {
             var currentLevel = FindObjectOfType<LoadLevel>().CurrentLevelName;
-            var levelNumber = int.Parse(currentLevel.Replace("Level ", "")) - 1;
+            var levelNumber = int.Parse(currentLevel.Replace("Level ", ""));
 
             var groupNumber = (levelNumber / groupSize) + 1;
 
