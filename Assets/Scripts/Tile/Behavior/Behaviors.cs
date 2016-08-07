@@ -84,6 +84,7 @@ namespace Assets.Scripts.World.Tile
                 new DownLeft(gameObject),
                 new LeftUp(gameObject),
                 new RightDown(gameObject),
+                new Cross(gameObject)
             };
 
             AllActions = new Action[]

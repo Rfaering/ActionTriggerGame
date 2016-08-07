@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Canvas.Overlays;
+﻿using Assets.Scripts.Buttons;
+using Assets.Scripts.Canvas.Overlays;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 
@@ -11,7 +12,7 @@ namespace Assets.Scripts.Canvas.Elements
 
         public void OpenSaveOverlay()
         {
-            FindAndOpenPanel<SaveOverlay>().SetInputField();            
+            FindAndOpenPanel<SaveOverlay>().SetInputField();
         }
 
         public void OpenNewBoardOverlay()
@@ -24,9 +25,9 @@ namespace Assets.Scripts.Canvas.Elements
             return FindAndOpenPanel<WinOverlay>();
         }
 
-        public LooseOverlay OpenLooseOverlay()
+        public InfoOverlay OpenInfoOverlay()
         {
-            return FindAndOpenPanel<LooseOverlay>();
+            return FindAndOpenPanel<InfoOverlay>();
         }
 
         public void Start()
@@ -49,6 +50,8 @@ namespace Assets.Scripts.Canvas.Elements
                 FindObjectOfType<BlurOptimized>().enabled = false;
                 Overlay.SetActive(false);
                 Overlay = null;
+
+                FindObjectOfType<CanvasMenu>().ShowMenu();
             }
 
         }
@@ -58,8 +61,20 @@ namespace Assets.Scripts.Canvas.Elements
             FindObjectOfType<BlurOptimized>().enabled = true;
             CloseActiveOverlay();
             var component = GetComponentInChildren<T>(true);
+
+            FindObjectOfType<CanvasMenu>().HideMenu();
+
             var panel = (component as MonoBehaviour).gameObject;
+
             panel.SetActive(true);
+
+            var animation = panel.GetComponent<Animation>();
+            if (animation != null)
+            {
+                panel.GetComponent<Animation>().Play();
+            }
+
+
             Overlay = panel;
             return panel.GetComponent<T>();
         }

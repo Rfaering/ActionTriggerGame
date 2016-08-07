@@ -3,7 +3,6 @@ using Assets.Scripts.Tile.Behavior;
 using Assets.Scripts.Utils;
 using Assets.Scripts.World.Tile;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Linq;
 using Assets.Scripts.Tile;
 

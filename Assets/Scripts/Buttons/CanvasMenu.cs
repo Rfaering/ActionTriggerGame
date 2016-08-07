@@ -7,6 +7,11 @@ namespace Assets.Scripts.Buttons
 {
     public class CanvasMenu : MonoBehaviour
     {
+        private const string Triggers = "Triggers";
+        private const string Actions = "Actions";
+        private const string Play = "Play";
+        private const string Reset = "Reset";
+            
         public GameObject[] TriggerButtons;
         public GameObject[] ActionButtons;
 
@@ -14,8 +19,8 @@ namespace Assets.Scripts.Buttons
         {
             DisableAllButtons();
 
-            TriggerButtons = GetChildrens("Triggers");
-            ActionButtons = GetChildrens("Actions");
+            TriggerButtons = GetChildrens(Triggers);
+            ActionButtons = GetChildrens(Actions);
         }
 
         private static GameObject[] GetChildrens(string name)
@@ -46,7 +51,7 @@ namespace Assets.Scripts.Buttons
                 SetLookAndFeel(behaviors, TriggerButtons);
             }
         }
-
+        
         private bool RenderBehaviorButton(BehaviorBase behavior)
         {
             var isInBuildMode = GlobalProperties.IsInBuildMode();
@@ -65,6 +70,22 @@ namespace Assets.Scripts.Buttons
             {
                 button.gameObject.SetActive(false);
             }
+        }
+
+        internal void ShowMenu()
+        {
+            transform.Find(Triggers).gameObject.SetActive(true);
+            transform.Find(Actions).gameObject.SetActive(true);
+            transform.Find(Reset).gameObject.SetActive(true);
+            transform.Find(Play).gameObject.SetActive(true);
+        }
+
+        internal void HideMenu()
+        {
+            transform.Find(Triggers).gameObject.SetActive(false);
+            transform.Find(Actions).gameObject.SetActive(false);
+            transform.Find(Reset).gameObject.SetActive(false);
+            transform.Find(Play).gameObject.SetActive(false);
         }
 
         private void SetLookAndFeel(BehaviorBase[] behaviors, GameObject[] buttons)

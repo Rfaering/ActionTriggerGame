@@ -7,7 +7,7 @@ namespace Assets.Scripts.Utils
 {
     public class ImageSetter : MonoBehaviour
     {
-        public enum HoseTypes { Straight, Turn, MiddleOut }
+        public enum HoseTypes { Straight, Turn, Cross }
         public enum SpecialTypes { Water, Flower }
         public enum Angle { Down = 0, Right = 90, Up = 180, Left = 270 }
 

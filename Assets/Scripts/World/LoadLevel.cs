@@ -4,21 +4,22 @@ using System.Linq;
 using Assets.Scripts.Misc;
 using Assets.Scripts.World.Tile;
 using Assets.Scripts.Tile;
-using Assets.Scripts.Stats;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Buttons;
 using Assets.Scripts.Tile.Behavior;
+using Assets.Scripts.Levels;
 
 namespace Assets.Scripts.World
 {
     public class LoadLevel : MonoBehaviour
     {
+        private LevelInfoManager _levelInfoManager;
         public string CurrentLevelName = "Level 1";
         private CanvasMenu _menu;
 
         public void Start()
         {
-            LoadCurrentLevel();
+            _levelInfoManager = GetComponent<LevelInfoManager>();
             _menu = GlobalGameObjects.Canvas.Get().GetComponent<CanvasMenu>();
         }
 
@@ -39,7 +40,13 @@ namespace Assets.Scripts.World
                 SetCorrectStateOnTiles(levelData);
             }
             SetCanvasMenu();
-            GetComponent<GameStatistics>().StartLevelRecording();
+
+            if (FindObjectOfType<BuildMode>().RuntimeMode == BuilderMode.Running)
+            {
+                _levelInfoManager.ShowInfoForLevel(CurrentLevelName);
+            }
+
+            //GetComponent<GameStatistics>().StartLevelRecording();
         }
 
         public void SetCanvasMenu()
@@ -54,7 +61,7 @@ namespace Assets.Scripts.World
                     SetRuntimeButtonLayouts(BehaviorTypes.Triggers);
                 }
                 else
-                {                    
+                {
                     SetDesignModeButtonLayout(BehaviorTypes.Actions);
                     SetDesignModeButtonLayout(BehaviorTypes.Triggers);
                 }
@@ -63,7 +70,7 @@ namespace Assets.Scripts.World
 
         private void SetButtonCount(int count, BehaviorTypes type)
         {
-            var createButtons = FindObjectOfType<CreateButtons>();            
+            var createButtons = FindObjectOfType<CreateButtons>();
             createButtons.BuildObject(type, count);
         }
 
@@ -118,7 +125,7 @@ namespace Assets.Scripts.World
 
         private void SetRuntimeButtonLayouts(BehaviorTypes type)
         {
-            var behaviors = GetComponentsInChildren<Behaviors>() ?? new Behaviors[0];            
+            var behaviors = GetComponentsInChildren<Behaviors>() ?? new Behaviors[0];
 
             var actionBehaviors = behaviors
                 .SelectMany(x => x.GetBehaviorList(type))

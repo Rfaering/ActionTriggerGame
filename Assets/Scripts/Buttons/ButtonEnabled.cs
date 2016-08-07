@@ -7,34 +7,46 @@ namespace Assets.Scripts.Buttons
 {
     public class ButtonEnabled : MonoBehaviour
     {
-        public bool ContentEnabled;
         private bool _contentEnabled;
 
+        public bool ContentEnabled
+        {
+            get { return _contentEnabled; }
+            set
+            {
+                _contentEnabled = value;
+                _updateNextFrame = true;
+            }
+        }
+
+        private bool _updateNextFrame = false;
+
         private BuildMode _buildMode;
+        private Runner _runner;
         private ImageSetter _imageSetter;
 
         public void Start()
-        {            
-            _contentEnabled = true;
+        {
+            _updateNextFrame = true;
             _buildMode = FindObjectOfType<BuildMode>();
             _imageSetter = GetComponent<ImageSetter>();
+            _runner = FindObjectOfType<Runner>();
         }
 
         public void Update()
         {
             if (_buildMode.RuntimeMode == BuilderMode.Running)
             {
-                GetComponent<Button>().interactable = _contentEnabled;
+                GetComponent<Button>().interactable = _contentEnabled && !_runner.IsRunning();
             }
             else
             {
-                GetComponent<Button>().interactable = true;
+                GetComponent<Button>().interactable = !_runner.IsRunning();
             }
-            if (ContentEnabled != _contentEnabled)
-            {
-                _contentEnabled = ContentEnabled;
 
-                if (_contentEnabled)
+            if (_updateNextFrame)
+            {
+                if (ContentEnabled)
                 {
                     _imageSetter.SetEnabledColor();
                 }

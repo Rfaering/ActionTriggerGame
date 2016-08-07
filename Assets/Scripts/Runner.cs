@@ -10,18 +10,20 @@ using Assets.Scripts.World.Tile;
 using Assets.Scripts.Tile;
 using Assets.Scripts.Stats;
 using Assets.Scripts.World;
+using Assets.Scripts.Levels;
 
 public class Runner : MonoBehaviour
 {
     private Coroutine _activeCoroutine;
     private BuildMode _buildMode;
-
+    private LevelInfoManager _infoManager;
     // Use this for initialization
     void Start()
     {
         StopRunning();
         StartCoroutine(LateStart(0.1f));
         _buildMode = GetComponent<BuildMode>();
+        _infoManager = FindObjectOfType<LevelInfoManager>();
     }
 
 
@@ -85,7 +87,7 @@ public class Runner : MonoBehaviour
 
     private void StartRunning()
     {
-        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>().SetProgress(true);
+        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>(true).SetProgress(true);
         _activeCoroutine = StartCoroutine(BeginRuntimeMode());
     }
 
@@ -97,7 +99,7 @@ public class Runner : MonoBehaviour
         }
         _activeCoroutine = null;
 
-        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>().SetProgress(false);
+        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>(true).SetProgress(false);
 
         ResetVisualState();
     }
@@ -114,13 +116,13 @@ public class Runner : MonoBehaviour
                 if (!GlobalProperties.IsInBuildMode())
                 {
                     if (IsWinConditionMet())
-                    {
-                        overlayManager.OpenWinnerOverlay();
+                    {                        
+                        _infoManager.ShowWinForCurrentLevel();
                         GetComponent<GameStatistics>().StopLevelRecording();
                     }
                     else if (IsLoosingConditionMet())
                     {
-                        overlayManager.OpenLooseOverlay();
+                        _infoManager.ShowInfoForLevel("Level 007");
                     }
                 }
 
