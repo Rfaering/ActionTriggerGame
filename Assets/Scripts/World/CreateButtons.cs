@@ -47,14 +47,14 @@ namespace Assets.Scripts.World
                     button.transform.localScale = new Vector3(1, 1, 1);
                     button.transform.localPosition = new Vector3(0, -75f * i - 50, 0);
                 }
-                else if (count > 5 && count < 9)
+                else if (count > 5 && count < 8)
                 {
                     var offSet = buttonType == BehaviorTypes.Actions ? 12.5f : -12.5f;
 
                     button = Instantiate(obj) as GameObject;
                     button.transform.SetParent(this.transform.FindChild(underChild).transform);
-                    button.transform.localScale = new Vector3(0.75f, 0.75f, 1);
-                    button.transform.localPosition = new Vector3(offSet, -50f * i - 40, 0);
+                    button.transform.localScale = new Vector3(0.9f, 0.9f, 1);
+                    button.transform.localPosition = new Vector3(offSet, -60f * i - 40, 0);
                 }
                 else
                 {

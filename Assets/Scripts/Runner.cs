@@ -116,9 +116,9 @@ public class Runner : MonoBehaviour
                 if (!GlobalProperties.IsInBuildMode())
                 {
                     if (IsWinConditionMet())
-                    {                        
+                    {
                         _infoManager.ShowWinForCurrentLevel();
-                        GetComponent<GameStatistics>().StopLevelRecording();
+                        LevelEvents.SendCompletedEvent(FindObjectOfType<LoadLevel>().CurrentLevelName);
                     }
                     else if (IsLoosingConditionMet())
                     {

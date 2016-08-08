@@ -47,7 +47,7 @@ namespace Assets.Scripts.Canvas.Elements
         {
             if (Overlay != null)
             {
-                FindObjectOfType<BlurOptimized>().enabled = false;
+                //FindObjectOfType<BlurOptimized>().enabled = false;
                 Overlay.SetActive(false);
                 Overlay = null;
 
@@ -58,7 +58,7 @@ namespace Assets.Scripts.Canvas.Elements
 
         private T FindAndOpenPanel<T>()
         {
-            FindObjectOfType<BlurOptimized>().enabled = true;
+            //FindObjectOfType<BlurOptimized>().enabled = true;
             CloseActiveOverlay();
             var component = GetComponentInChildren<T>(true);
 

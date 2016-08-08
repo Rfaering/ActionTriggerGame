@@ -12,7 +12,6 @@ namespace Assets.Scripts.Misc
         internal readonly SelectedBehavior _selectedBehavior;
         internal readonly Visual _visual;
         internal readonly Behaviors _behaviors;
-        internal readonly Sprite Icon;
 
         public string Name
         {
@@ -35,7 +34,6 @@ namespace Assets.Scripts.Misc
             _selectedBehavior = _owner.GetComponent<SelectedBehavior>();
             _visual = _owner.GetComponent<Visual>();
             _behaviors = _owner.GetComponent<Behaviors>();
-            Icon = Resources.Load<Sprite>("Icons/" + IconName);
         }
 
         private bool _active;
@@ -91,7 +89,7 @@ namespace Assets.Scripts.Misc
         }
 
         public void ClearUI()
-        {            
+        {
             ClearUI(_owner);
         }
 
