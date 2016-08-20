@@ -65,19 +65,24 @@ namespace Assets.Scripts.Tile.Behavior
             _behaviors = GetComponent<Behaviors>();
         }
 
-        public bool IsNameSelected(string name)
+        public BehaviorBase GetBehavior(string name)
         {
             if (SelectedTrigger != null && SelectedTrigger.Name == name)
             {
-                return true;
+                return SelectedTrigger;
             }
 
             if (SelectedAction != null && SelectedAction.Name == name)
             {
-                return true;
+                return SelectedAction;
             }
 
-            return false;
+            return null;
+        }
+
+        public bool IsNameSelected(string name)
+        {
+            return GetBehavior(name) != null;
         }
 
         public void RemoveSelection(string name)
@@ -98,10 +103,17 @@ namespace Assets.Scripts.Tile.Behavior
             return SelectedAction != null && SelectedTrigger != null;
         }
 
-        public void SelectBehavior(string name)
+        // Will return oldbehavior
+        public string SelectBehavior(string name)
         {
+            if (name == null)
+            {
+                return null;
+            }
+            
             var behavior = _behaviors.GetBehavior(name);
-            SelectBehavior(behavior);
+            var oldSelection = SelectBehavior(behavior);
+            return oldSelection != null ? oldSelection.Name : null;
         }
 
         public void RemoveSelection(BehaviorBase behavior)
@@ -112,21 +124,26 @@ namespace Assets.Scripts.Tile.Behavior
             }
         }
 
-        public void SelectBehavior(BehaviorBase behavior)
+        public BehaviorBase SelectBehavior(BehaviorBase behavior)
         {
+            BehaviorBase oldBehavior = null;
             if (IsNameSelected(behavior.Name))
             {
-                return;
+                return GetBehavior(behavior.Name);
             }
 
             if (behavior.BehaviorType == BehaviorTypes.Actions)
             {
+                oldBehavior = SelectedAction;
                 SelectedAction = behavior as Action;
             }
             if (behavior.BehaviorType == BehaviorTypes.Triggers)
             {
+                oldBehavior = SelectedTrigger;
                 SelectedTrigger = behavior as Trigger;
             }
+
+            return oldBehavior;
         }
     }
 }

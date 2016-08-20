@@ -13,7 +13,14 @@ namespace Assets.Scripts.Buttons
             behavior.UpdateUI(gameObject);
             gameObject.SetActive(true);
             gameObject.name = behavior.Name;
-            GetComponent<ButtonEnabled>().ContentEnabled = false;
+            if( Globals.InputMode == InputMode.Buttons)
+            {
+                GetComponent<ButtonEnabled>().ContentEnabled = false;
+            } else
+            {
+                GetComponent<ButtonEnabled>().ContentEnabled = true;
+            }
+            
         }
     }
 }

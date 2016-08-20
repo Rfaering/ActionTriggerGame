@@ -113,6 +113,8 @@ namespace Assets.Scripts.World
                 }
             }
 
+            FindObjectOfType<Mirror>().IsMirrorEnabled = levelData.Mirror;
+
             GlobalGameObjects.World.Get().GetComponent<Runner>().StopRunning();
 
             foreach (var animation in GetComponentsInChildren<Visual>().Select(x => x.gameObject.GetComponent<Animation>()))

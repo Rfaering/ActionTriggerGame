@@ -61,7 +61,7 @@ namespace Assets.Scripts.Misc
             }
         }
 
-        public virtual void ResetUI()
+        public virtual void Reset()
         {
             if (_active)
             {
@@ -93,7 +93,7 @@ namespace Assets.Scripts.Misc
             ClearUI(_owner);
         }
 
-        public abstract void UpdateUI(GameObject gameobject);
-        public abstract void ClearUI(GameObject gameobject);
+        public abstract void UpdateUI(GameObject gameObject);
+        public abstract void ClearUI(GameObject gameObject);
     }
 }

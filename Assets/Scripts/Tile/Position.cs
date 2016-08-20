@@ -10,5 +10,8 @@ namespace Assets.Scripts.Tile
         public GameObject Down;
         public GameObject Left;
         public GameObject Right;
+
+        public GameObject VerticalMirror;
+        public GameObject HorizontalMirror;
     }
 }

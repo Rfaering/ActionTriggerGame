@@ -31,7 +31,7 @@ namespace Assets.Scripts.Tile
             }
             else
             {
-                gameObject.GetComponent<Animation>().Play();
+                gameObject.GetComponent<Animation>().Blend("KillAnimation");
             }
         }
         #endregion

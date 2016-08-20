@@ -11,6 +11,8 @@ namespace Assets.Scripts.Serialization
         public int Rows;
         public int Columns;
 
+        public bool Mirror;
+
         public TileData[] Tiles;
     }
 }

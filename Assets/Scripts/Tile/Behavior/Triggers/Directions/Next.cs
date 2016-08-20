@@ -1,10 +1,10 @@
 ﻿using Assets.Scripts.Actions;
 using Assets.Scripts.Tile;
-using Assets.Scripts.Utils;
 using Assets.Scripts.World.Tile;
 using UnityEngine;
 using System.Linq;
 using Assets.Scripts.Tile.Behavior;
+using Assets.Scripts.Tile.Behavior.Triggers.Directions;
 
 namespace Assets.Scripts.Triggers
 {
@@ -17,7 +17,7 @@ namespace Assets.Scripts.Triggers
         public abstract Direction[] WaterDirections { get; }
 
         public override bool Check()
-        {            
+        {
             if (_owner.GetComponent<Behaviors>().GetAction<Water>().Active)
             {
                 return true;
@@ -27,7 +27,7 @@ namespace Assets.Scripts.Triggers
             return waterCommingFromAnyDirection;
         }
 
-        private bool IsWaterCommingFromDirection(Direction waterDirection)
+        internal bool IsWaterCommingFromDirection(Direction waterDirection)
         {
             var position = _owner.GetComponent<Position>();
 
@@ -50,18 +50,29 @@ namespace Assets.Scripts.Triggers
         {
         }
 
-        private bool Check(GameObject gameObject, Direction waterCommingFromDirection)
+        private bool Check(GameObject gameObject, Direction isWaterCommingFromTheseDirections)
         {
             if (gameObject != null)
             {
                 var waterState = gameObject.GetComponent<WaterState>();
                 var selectedBehavior = gameObject.GetComponent<SelectedBehavior>().SelectedTrigger as Next;
+
+                bool check = false;
+
                 if (selectedBehavior == null)
                 {
                     return false;
                 }
 
-                return (waterState.Watered) && selectedBehavior.WaterDirections.Any(x => x == waterCommingFromDirection);
+                var bridge = selectedBehavior as BridgeUpDown;
+                if (bridge != null)
+                {
+                    check = bridge.UnderWaterFlow && bridge.UnderBridgeDirections.Any(x => x == isWaterCommingFromTheseDirections);
+                }
+
+                check = check || ((waterState.Watered) && selectedBehavior.WaterDirections.Any(x => x == isWaterCommingFromTheseDirections));
+
+                return check;
             }
             return false;
         }

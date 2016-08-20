@@ -20,13 +20,13 @@ namespace Assets.Scripts.World
 
         private void CreateBoard()
         {
-            Vector3 position = new Vector3(-columns + 1, rows - 1);
+            Vector3 position = new Vector3(0 - (((columns - 1) / 2.0f) * 1.7f), (((rows - 1) / 2.0f) * 1.7f));
 
             for (int i = 0; i < rows; i++)
             {
                 for (int j = 0; j < columns; j++)
                 {
-                    var gameObject = Instantiate(obj, position + new Vector3(j * 2, -i * 2), Quaternion.Euler(new Vector3(-90.0f, 0.0f, 0.0f))) as GameObject;
+                    var gameObject = Instantiate(obj, position + new Vector3(j * 1.7f, -i * 1.7f), Quaternion.Euler(new Vector3(-90.0f, 0.0f, 0.0f))) as GameObject;
                     gameObject.name = "Tiles " + (1 + (i * columns + j));
                     gameObject.transform.SetParent(this.transform);
                     gameObject.SetActive(true);
@@ -44,6 +44,28 @@ namespace Assets.Scripts.World
                         var topChild = transform.GetChild(GetIndex(i - 1, j));
                         gameObject.GetComponent<Position>().Up = topChild.gameObject;
                         topChild.GetComponent<Position>().Down = gameObject;
+                    }
+                }
+            }
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    if (i < ((rows + 1) / 2))
+                    {
+                        var unit = transform.GetChild(GetIndex(i, j));
+                        var mirror = transform.GetChild(GetIndex(rows - 1 - i, j));
+                        unit.GetComponent<Position>().VerticalMirror = mirror.gameObject;
+                        mirror.GetComponent<Position>().VerticalMirror = unit.gameObject;
+                    }
+
+                    if (j < ((columns + 1) / 2))
+                    {
+                        var unit = transform.GetChild(GetIndex(i, j));
+                        var mirror = transform.GetChild(GetIndex(i, columns - 1 - j));
+                        unit.GetComponent<Position>().HorizontalMirror = mirror.gameObject;
+                        mirror.GetComponent<Position>().HorizontalMirror = unit.gameObject;
                     }
                 }
             }

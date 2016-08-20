@@ -20,15 +20,13 @@ namespace Assets.Scripts.Actions
             }
         }
 
-        public override void ClearUI(GameObject gameobject)
+        public override void ClearUI(GameObject gameObject)
         {
-            gameobject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
+            gameObject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameObject)
         {
-            // todo fix
-            //gameobject.GetComponent<ImageSetter>().SetImage("Action/Full", Icon);
         }
     }
 }

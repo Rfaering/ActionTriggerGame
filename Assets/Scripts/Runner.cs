@@ -11,6 +11,8 @@ using Assets.Scripts.Tile;
 using Assets.Scripts.Stats;
 using Assets.Scripts.World;
 using Assets.Scripts.Levels;
+using Assets.Scripts.Tile.Behavior;
+using Assets.Scripts.Tile.Behavior.Triggers.Directions;
 
 public class Runner : MonoBehaviour
 {
@@ -97,6 +99,7 @@ public class Runner : MonoBehaviour
         {
             StopCoroutine(_activeCoroutine);
         }
+        FindObjectOfType<Number>().HideNumber();
         _activeCoroutine = null;
 
         GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>(true).SetProgress(false);
@@ -106,27 +109,30 @@ public class Runner : MonoBehaviour
 
     IEnumerator BeginRuntimeMode()
     {
+        int number = 0;
         while (true)
         {
             yield return new WaitForSeconds(0.5f);
             var overlayManager = GlobalGameObjects.OverlayManager.Get().GetComponent<OverlayManager>();
             if (!overlayManager.IsOverlayOpen)
             {
-                // Only run win condition if the game is not in build mode
-                if (!GlobalProperties.IsInBuildMode())
+                // Only run win condition if the game is not in build mode                
+                if (!GlobalProperties.IsInBuildMode() && IsLoosingConditionMet())
                 {
-                    if (IsWinConditionMet())
-                    {
-                        _infoManager.ShowWinForCurrentLevel();
-                        LevelEvents.SendCompletedEvent(FindObjectOfType<LoadLevel>().CurrentLevelName);
-                    }
-                    else if (IsLoosingConditionMet())
-                    {
-                        _infoManager.ShowInfoForLevel("Level 007");
-                    }
+                    yield return new WaitForSeconds(1.5f);
+                    StopRunning();
                 }
-
-                RunSingleRound();
+                else if (!GlobalProperties.IsInBuildMode() && IsWinConditionMet())
+                {
+                    _infoManager.ShowWinForCurrentLevel();
+                    LevelEvents.SendCompletedEvent(FindObjectOfType<LoadLevel>().CurrentLevelName);
+                }
+                else
+                {
+                    number++;
+                    FindObjectOfType<Number>().SetRoundNumber(number);
+                    RunSingleRound();
+                }
             }
         }
     }
@@ -165,6 +171,12 @@ public class Runner : MonoBehaviour
 
         foreach (var item in components)
         {
+            var bridge = item.GetComponent<SelectedBehavior>().SelectedTrigger as BridgeUpDown;
+            if (bridge != null && bridge.IsGoingToExecuteWaterFlow)
+            {
+                bridge.ExecuteUnderWaterFlow();
+            }
+
             if (!item.GetComponent<WaterState>().Watered)
             {
                 item.UpdateActions();
@@ -177,17 +189,17 @@ public class Runner : MonoBehaviour
         var components = GetComponentsInChildren<Behaviors>();
 
         // Check win conditions
-        var activeWinCondition = components
+        var redFlower = components
             .Select(x => x.GetAction<Flower>())
             .Where(x => x.Active)
             .ToArray();
 
-        if (activeWinCondition.Any(x => x.Done))
-        {
-            return activeWinCondition.All(x => x.Done);
-        }
+        var blueFlowers = components
+            .Select(x => x.GetAction<FlowerBlue>())
+            .Where(x => x.Active)
+            .ToArray();
 
-        return false;
+        return redFlower.All(x => x.Done) && blueFlowers.All(x => x.Done);
     }
 
     private bool IsLoosingConditionMet()
@@ -195,14 +207,40 @@ public class Runner : MonoBehaviour
         var components = GetComponentsInChildren<Behaviors>();
 
         // Check win conditions
-        var activeWinCondition = components
+        var normalFlowers = components
             .Select(x => x.GetAction<Flower>())
             .Where(x => x.Active)
             .ToArray();
 
-        if (activeWinCondition.Any(x => x.Done))
+        var blueFlowers = components
+            .Select(x => x.GetAction<FlowerBlue>())
+            .Where(x => x.Active)
+            .ToArray();
+
+        if (normalFlowers.Any(x => x.Done))
         {
-            return !activeWinCondition.All(x => x.Done);
+            if (!normalFlowers.All(x => x.Done))
+            {
+                foreach (var item in normalFlowers)
+                {
+                    item._owner.GetComponent<Animation>().Blend("Highlight");
+                }
+
+                return true;
+            }
+        }
+
+        if (blueFlowers.Any(x => x.Done))
+        {
+            if (!blueFlowers.All(x => x.Done))
+            {
+                foreach (var item in blueFlowers)
+                {
+                    item._owner.GetComponent<Animation>().Blend("Highlight");
+                }
+
+                return true;
+            }
         }
 
         return false;
@@ -210,6 +248,11 @@ public class Runner : MonoBehaviour
 
     private void ResetVisualState()
     {
+        foreach (var item in FindObjectsOfType<CFX_AutoDestructShuriken>())
+        {
+            item.gameObject.SetActive(false);
+        }
+
         var behaviors = GetComponentsInChildren<Behaviors>();
         foreach (var item in behaviors)
         {

@@ -9,13 +9,12 @@ namespace Assets.Scripts
 {
     public class BuildMode : MonoBehaviour
     {
-        private BuilderMode _runtimeMode;
         public BuilderMode RuntimeMode
         {
-            get { return _runtimeMode; }
+            get { return Globals.BuildMode; }
             set
             {
-                _runtimeMode = value;
+                Globals.BuildMode = value;
                 SetNewRuntimeMode(value);
             }
         }

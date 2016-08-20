@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Buttons;
+using Assets.Scripts.Misc;
 
 namespace Assets.Scripts.Tile
 {
@@ -16,6 +17,11 @@ namespace Assets.Scripts.Tile
 
         public void Update()
         {
+            if (Globals.InputMode == InputMode.DragAndDrop)
+            {
+                return;
+            }
+
             if (!GetComponent<Animation>().isPlaying && !_waterState.Watered)
             {
                 UpdateColor();
@@ -108,18 +114,13 @@ namespace Assets.Scripts.Tile
 
         private void UpdateColor()
         {
-            if (Selected)
+            if (Selected && !FindObjectOfType<Runner>().IsRunning())
             {
                 gameObject.transform.Find("Foreground").GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f);
-
-
             }
             else
             {
-                if (!_waterState.Watered)
-                {
-                    gameObject.transform.Find("Foreground").GetComponent<SpriteRenderer>().color = new Color(0.7f, 0.7f, 0.7f);
-                }
+                gameObject.transform.Find("Foreground").GetComponent<SpriteRenderer>().color = new Color(0.7f, 0.7f, 0.7f);
             }
         }
         #endregion

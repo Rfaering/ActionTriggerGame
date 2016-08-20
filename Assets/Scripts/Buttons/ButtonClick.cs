@@ -22,6 +22,11 @@ namespace Assets.Scripts.Buttons
 
         public void ActivateBehavior()
         {
+            if (Globals.InputMode == InputMode.DragAndDrop)
+            {
+                return;
+            }
+
             var isInBuildMode = GlobalProperties.IsInBuildMode();
             var currentBehavior = CurrentBehavior;
             if (currentBehavior == null)
@@ -56,7 +61,7 @@ namespace Assets.Scripts.Buttons
 
         private void ToggleAllTilesSelection(bool removeSelection)
         {
-            var behaviors = GlobalGameObjects.World.Get().GetComponentsInChildren<Selection>();
+            var behaviors = FindObjectsOfType<Selection>();
             foreach (var item in behaviors.Where(x => x.Selected))
             {
                 ToggleSingleSelection(item.GetComponent<SelectedBehavior>(), removeSelection);
@@ -67,10 +72,20 @@ namespace Assets.Scripts.Buttons
         {
             if (removeSelection)
             {
+                if (Globals.BuildMode == BuilderMode.Running)
+                {
+                    FindObjectOfType<Mirror>().RemoveSelection(selectedBehavior.gameObject, name);
+                }
+
                 selectedBehavior.RemoveSelection(this.gameObject.name);
             }
             else
             {
+                if (Globals.BuildMode == BuilderMode.Running)
+                {
+                    FindObjectOfType<Mirror>().SetMirror(selectedBehavior.gameObject, name);
+                }
+
                 selectedBehavior.SelectBehavior(this.gameObject.name);
             }
         }
@@ -103,7 +118,7 @@ namespace Assets.Scripts.Buttons
         private void SetColorBasedOnAvailibility()
         {
             var currentBehavior = CurrentBehavior;
-            if (currentBehavior == null || !currentBehavior.Available)
+            if (Globals.InputMode == InputMode.Buttons && (currentBehavior == null || !currentBehavior.Available))
             {
                 GetComponent<ButtonEnabled>().ContentEnabled = false;
             }

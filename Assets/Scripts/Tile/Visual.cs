@@ -1,5 +1,5 @@
-﻿using Assets.Scripts.Tile.Behavior;
-using System;
+﻿using Assets.Scripts.Buttons;
+using Assets.Scripts.Misc;
 using UnityEngine;
 
 namespace Assets.Scripts.Tile
@@ -18,8 +18,14 @@ namespace Assets.Scripts.Tile
         void Update()
         {
             if (_runner.IsRunning())
+            {                
+                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.30f, 0.2f, 0.0f);
+                return;
+            }
+
+            if( Globals.InputMode == InputMode.DragAndDrop && DraggableButton.itemBeingDragged == null)
             {
-                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(1.0f, 0.50f, 0.0f);
+                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.30f, 0.2f, 0.0f);
                 return;
             }
 

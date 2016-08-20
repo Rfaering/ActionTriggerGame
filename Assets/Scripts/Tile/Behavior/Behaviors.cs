@@ -1,6 +1,8 @@
 ﻿using Assets.Scripts.Actions;
 using Assets.Scripts.Misc;
 using Assets.Scripts.Tile;
+using Assets.Scripts.Tile.Behavior.Actions;
+using Assets.Scripts.Tile.Behavior.Triggers.Directions;
 using Assets.Scripts.Triggers;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,10 +37,17 @@ namespace Assets.Scripts.World.Tile
                 if (!_active)
                 {
                     GetComponent<WaterState>().Watered = false;
-                    var win = GetComponent<Behaviors>().GetAction<Flower>();
-                    if (win != null)
+
+                    var flower = GetComponent<Behaviors>().GetAction<Flower>();
+                    if (flower != null)
                     {
-                        win.Done = false;
+                        flower.Done = false;
+                    }
+
+                    var blueFlower = GetComponent<Behaviors>().GetAction<FlowerBlue>();
+                    if (blueFlower != null)
+                    {
+                        blueFlower.Done = false;
                     }
                 }
             }
@@ -68,7 +77,7 @@ namespace Assets.Scripts.World.Tile
             Active = false;
             foreach (var behavior in AllBehaviors)
             {
-                behavior.ResetUI();
+                behavior.Reset();
             }
         }
 
@@ -84,14 +93,19 @@ namespace Assets.Scripts.World.Tile
                 new DownLeft(gameObject),
                 new LeftUp(gameObject),
                 new RightDown(gameObject),
-                new Cross(gameObject)
+                new Cross(gameObject),
+                new BridgeUpDown(gameObject)
             };
 
             AllActions = new Action[]
             {
                 new Water(gameObject),
                 new Flower(gameObject),
-                //new Timer(gameObject),
+                new FlowerBlue(gameObject),
+                new Timer(gameObject),
+                new Lock(gameObject),
+                new Key(gameObject),
+                new Well(gameObject),
             };
         }
 
@@ -151,14 +165,20 @@ namespace Assets.Scripts.World.Tile
         {
             if (Active)
             {
-                foreach (var item in AllActions.Where(x => x.Active))
+                var activeActions = AllActions.Where(x => x.Active);
+                foreach (var item in activeActions)
                 {
                     item.Execute(gameObject);
                 }
 
-                GetComponent<WaterState>().Watered = true;
+                // Water if no actions is set
+                if (!activeActions.Any())
+                {
+                    GetComponent<WaterState>().Watered = true;
+                }
             }
         }
     }
 }
+
 

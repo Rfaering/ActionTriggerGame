@@ -43,13 +43,14 @@ namespace Assets.Scripts.World
             {
                 Columns = createTiles.columns,
                 Rows = createTiles.rows,
-                Tiles = tileData.ToArray()
+                Tiles = tileData.ToArray(),
+                Mirror = FindObjectOfType<Mirror>().IsMirrorEnabled
             };
 
 
             var content = JsonUtility.ToJson(levelData);
 
-            
+
             using (FileStream fs = new FileStream("Assets/Resources/Levels/" + SaveLevelName + ".txt", FileMode.Create))
             {
                 using (StreamWriter writer = new StreamWriter(fs))

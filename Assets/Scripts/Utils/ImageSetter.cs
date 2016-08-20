@@ -7,21 +7,50 @@ namespace Assets.Scripts.Utils
 {
     public class ImageSetter : MonoBehaviour
     {
-        public enum HoseTypes { Straight, Turn, Cross }
-        public enum SpecialTypes { Water, Flower }
+        public enum HoseTypes { Straight, Turn, Cross, Bridge }
+        public enum SpecialTypes { Water, Flower, FlowerBlue, Timer, Lock, Key, Well }
         public enum Angle { Down = 0, Right = 90, Up = 180, Left = 270 }
+
+        private Color disabledColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+        private Color enabledColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         public void SetHoseVisual(HoseTypes type, Angle angle)
         {
             var visualGameObject = transform.Find("Hose/" + Enum.GetName(typeof(HoseTypes), type)).gameObject;
             visualGameObject.transform.localRotation = Quaternion.Euler(new Vector3(90, ((float)angle), 0));
-            visualGameObject.SetActive(true);
+            visualGameObject.SetActiveRecursively(true);
         }
 
         public void SetSpecialVisual(SpecialTypes type)
         {
             var visualGameObject = transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), type)).gameObject;
-            visualGameObject.SetActive(true);
+            visualGameObject.SetActiveRecursively(true);
+        }
+
+        public void RemoveSpecialVisual(SpecialTypes type)
+        {
+            var visualGameObject = transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), type)).gameObject;
+            visualGameObject.SetActiveRecursively(false);
+        }
+
+        public void ActivateVisual(string path)
+        {
+            var visualGameObject = transform.Find(path);
+            if (visualGameObject == null)
+            {
+                return;
+            }
+            visualGameObject.gameObject.SetActive(true);
+        }
+
+        public void DisableVisual(string path)
+        {
+            var visualGameObject = transform.Find(path);
+            if (visualGameObject == null)
+            {
+                return;
+            }
+            visualGameObject.gameObject.SetActive(false);
         }
 
         public void SetDisabledColor()
@@ -31,7 +60,10 @@ namespace Assets.Scripts.Utils
                 var visualGameObject = transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), item)).gameObject;
                 if (visualGameObject != null)
                 {
-                    visualGameObject.GetComponent<Image>().CrossFadeColor(new Color(1.0f, 1.0f, 1.0f, 0.3f), 0.2f, true, true);
+                    foreach (var image in visualGameObject.GetComponentsInChildren<Image>())
+                    {
+                        image.CrossFadeColor(disabledColor, 0.2f, true, true);
+                    }
                 }
             }
             foreach (var item in Enum.GetValues(typeof(HoseTypes)))
@@ -40,7 +72,10 @@ namespace Assets.Scripts.Utils
 
                 if (visualGameObject != null)
                 {
-                    visualGameObject.GetComponent<Image>().CrossFadeColor(new Color(1.0f, 1.0f, 1.0f, 0.3f), 0.2f, true, true);
+                    foreach (var image in visualGameObject.GetComponentsInChildren<Image>())
+                    {
+                        image.CrossFadeColor(disabledColor, 0.2f, true, true);
+                    }
                 }
             }
         }
@@ -52,7 +87,10 @@ namespace Assets.Scripts.Utils
                 var visualGameObject = transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), item)).gameObject;
                 if (visualGameObject != null)
                 {
-                    visualGameObject.GetComponent<Image>().CrossFadeColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, true, true);
+                    foreach (var image in visualGameObject.GetComponentsInChildren<Image>())
+                    {
+                        image.CrossFadeColor(enabledColor, 0.2f, true, true);
+                    }
                 }
             }
             foreach (var item in Enum.GetValues(typeof(HoseTypes)))
@@ -60,8 +98,11 @@ namespace Assets.Scripts.Utils
                 var visualGameObject = transform.Find("Hose/" + Enum.GetName(typeof(HoseTypes), item)).gameObject;
                 if (visualGameObject != null)
                 {
-                    visualGameObject.GetComponent<Image>().CrossFadeColor(new Color(1.0f, 1.0f, 1.0f, 1.0f), 0.2f, true, true);
-                }                
+                    foreach (var image in visualGameObject.GetComponentsInChildren<Image>())
+                    {
+                        image.CrossFadeColor(enabledColor, 0.2f, true, true);
+                    }
+                }
             }
         }
 

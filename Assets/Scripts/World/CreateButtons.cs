@@ -42,19 +42,21 @@ namespace Assets.Scripts.World
                 GameObject button;
                 if (count <= 5)
                 {
-                    button = Instantiate(obj) as GameObject;
-                    button.transform.SetParent(this.transform.FindChild(underChild).transform);
-                    button.transform.localScale = new Vector3(1, 1, 1);
-                    button.transform.localPosition = new Vector3(0, -75f * i - 50, 0);
-                }
-                else if (count > 5 && count < 8)
-                {
-                    var offSet = buttonType == BehaviorTypes.Actions ? 12.5f : -12.5f;
+                    var offSet = buttonType == BehaviorTypes.Actions ? -13.0f : 13.0f;
 
                     button = Instantiate(obj) as GameObject;
                     button.transform.SetParent(this.transform.FindChild(underChild).transform);
-                    button.transform.localScale = new Vector3(0.9f, 0.9f, 1);
-                    button.transform.localPosition = new Vector3(offSet, -60f * i - 40, 0);
+                    button.transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                    button.transform.localPosition = new Vector3(offSet, -85f * i - 50, 0);
+                }
+                else if (count > 5 && count < 8)
+                {
+                    var offSet = buttonType == BehaviorTypes.Actions ? -13f : 13f;
+
+                    button = Instantiate(obj) as GameObject;
+                    button.transform.SetParent(this.transform.FindChild(underChild).transform);
+                    button.transform.localScale = new Vector3(1.1f, 1.1f, 1);
+                    button.transform.localPosition = new Vector3(offSet, -75f * i - 40, 0);
                 }
                 else
                 {
