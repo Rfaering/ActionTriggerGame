@@ -80,11 +80,11 @@ namespace Assets.Scripts.Misc
             }
         }
 
-        public void UpdateUI()
+        public void UpdateUI(bool preview = false)
         {
-            if (Active)
+            if (Active || preview)
             {
-                UpdateUI(_owner);
+                UpdateUI(_owner, preview);
             }
         }
 
@@ -93,7 +93,7 @@ namespace Assets.Scripts.Misc
             ClearUI(_owner);
         }
 
-        public abstract void UpdateUI(GameObject gameObject);
+        public abstract void UpdateUI(GameObject gameObject, bool preview = false);
         public abstract void ClearUI(GameObject gameObject);
     }
 }

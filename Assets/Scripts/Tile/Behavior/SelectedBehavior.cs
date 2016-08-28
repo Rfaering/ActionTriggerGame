@@ -15,6 +15,7 @@ namespace Assets.Scripts.Tile.Behavior
             get { return _selectedAction; }
             set
             {
+                ClearPreview();
                 var oldValue = _selectedAction;
                 _selectedAction = value;
                 var newValue = _selectedAction;
@@ -32,15 +33,19 @@ namespace Assets.Scripts.Tile.Behavior
             get { return _selectedTrigger; }
             set
             {
+                ClearPreview();
                 var oldValue = _selectedTrigger;
                 _selectedTrigger = value;
                 var newValue = _selectedTrigger;
 
                 RemoveActivation(oldValue);
                 ApplyActivation(newValue);
-
             }
         }
+
+        private BehaviorBase _preview;
+        private BehaviorBase _covering;
+
 
         private void ApplyActivation(BehaviorBase behavior)
         {
@@ -103,17 +108,48 @@ namespace Assets.Scripts.Tile.Behavior
             return SelectedAction != null && SelectedTrigger != null;
         }
 
-        // Will return oldbehavior
-        public string SelectBehavior(string name)
+        public void SelectBehavior(string name)
         {
-            if (name == null)
-            {
-                return null;
-            }
-            
             var behavior = _behaviors.GetBehavior(name);
-            var oldSelection = SelectBehavior(behavior);
-            return oldSelection != null ? oldSelection.Name : null;
+            SelectBehavior(behavior);
+        }
+
+        public void SetPreview(string name)
+        {
+            var behavior = _behaviors.GetBehavior(name);
+            _preview = behavior;
+
+            if (_preview is Action && SelectedAction != null)
+            {
+                _covering = SelectedAction;
+                _covering.ClearUI();
+            }
+
+            if (_preview is Trigger && SelectedTrigger != null)
+            {
+                _covering = SelectedTrigger;
+                _covering.ClearUI();
+            }
+
+            if (_preview != null)
+            {
+                _preview.UpdateUI(true);
+            }
+        }
+
+        public void ClearPreview()
+        {
+            if (_preview != null)
+            {
+                _preview.ClearUI();
+            }
+            if (_covering != null)
+            {
+                _covering.UpdateUI();
+            }
+
+            _preview = null;
+            _covering = null;
         }
 
         public void RemoveSelection(BehaviorBase behavior)
@@ -124,26 +160,22 @@ namespace Assets.Scripts.Tile.Behavior
             }
         }
 
-        public BehaviorBase SelectBehavior(BehaviorBase behavior)
+        public void SelectBehavior(BehaviorBase behavior)
         {
             BehaviorBase oldBehavior = null;
             if (IsNameSelected(behavior.Name))
             {
-                return GetBehavior(behavior.Name);
+                return;
             }
 
             if (behavior.BehaviorType == BehaviorTypes.Actions)
             {
-                oldBehavior = SelectedAction;
                 SelectedAction = behavior as Action;
             }
             if (behavior.BehaviorType == BehaviorTypes.Triggers)
             {
-                oldBehavior = SelectedTrigger;
                 SelectedTrigger = behavior as Trigger;
             }
-
-            return oldBehavior;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Assets.Scripts.Actions
             gameObject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
         }
 
-        public override void UpdateUI(GameObject gameObject)
+        public override void UpdateUI(GameObject gameObject, bool preview = false)
         {
         }
     }

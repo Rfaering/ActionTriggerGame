@@ -27,7 +27,7 @@ namespace Assets.Scripts.Tile
                 UpdateColor();
             }
 
-            if (!GlobalProperties.IsOverlayPanelOpen())
+            if (!GlobalProperties.IsOverlayPanelOpen)
             {
                 if (Input.GetMouseButtonDown(0))
                 {

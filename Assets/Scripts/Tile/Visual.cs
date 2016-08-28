@@ -12,7 +12,7 @@ namespace Assets.Scripts.Tile
 
         void Start()
         {            
-            _runner = GlobalGameObjects.World.Get().GetComponent<Runner>();
+            _runner = FindObjectOfType<Runner>();
         }
 
         void Update()

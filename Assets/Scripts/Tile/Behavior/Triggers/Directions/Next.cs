@@ -46,7 +46,7 @@ namespace Assets.Scripts.Triggers
             return false;
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
         }
 

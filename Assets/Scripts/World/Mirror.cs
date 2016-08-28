@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Tile;
+﻿using Assets.Scripts.Misc;
+using Assets.Scripts.Tile;
 using Assets.Scripts.Tile.Behavior;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class Mirror : MonoBehaviour
 {
     public bool IsMirrorEnabled;
 
-    public void Start()
+    public void Awake()
     {
         IsMirrorEnabled = false;
     }
@@ -21,7 +22,7 @@ public class Mirror : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().enabled = false;
         }
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.M) && Globals.BuildMode == BuilderMode.DesignMode)
         {
             IsMirrorEnabled = !IsMirrorEnabled;
         }
@@ -29,7 +30,7 @@ public class Mirror : MonoBehaviour
 
     public void SetMirror(GameObject gameObject, string behaviorName)
     {
-        if (IsMirrorEnabled)
+        if (IsMirrorEnabled && Globals.BuildMode == BuilderMode.Running)
         {
             var position = gameObject.GetComponent<Position>();
             var horizontalMirror = position.HorizontalMirror;
@@ -37,9 +38,29 @@ public class Mirror : MonoBehaviour
         }
     }
 
+    public void SetMirrorPreview(GameObject gameObject, string behaviorName)
+    {
+        if (IsMirrorEnabled && Globals.BuildMode == BuilderMode.Running)
+        {
+            var position = gameObject.GetComponent<Position>();
+            var horizontalMirror = position.HorizontalMirror;
+            horizontalMirror.GetComponent<SelectedBehavior>().SetPreview(SwapBehavior(behaviorName));
+        }
+    }
+
+    public void ClearMirrorPreview(GameObject gameObject)
+    {
+        if (IsMirrorEnabled && Globals.BuildMode == BuilderMode.Running)
+        {
+            var position = gameObject.GetComponent<Position>();
+            var horizontalMirror = position.HorizontalMirror;
+            horizontalMirror.GetComponent<SelectedBehavior>().ClearPreview();
+        }
+    }
+
     public void RemoveSelection(GameObject gameObject, string behaviorName)
     {
-        if (IsMirrorEnabled)
+        if (IsMirrorEnabled && Globals.BuildMode == BuilderMode.Running)
         {
             var position = gameObject.GetComponent<Position>();
             var horizontalMirror = position.HorizontalMirror;

@@ -26,9 +26,9 @@ namespace Assets.Scripts.Actions
             next.transform.position = new Vector3(next.transform.position.x, next.transform.position.y, -5);
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
-            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.FlowerBlue);
+            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.FlowerBlue, preview);
             base.UpdateUI(gameobject);
         }
     }

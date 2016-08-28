@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Canvas.Elements;
 using Assets.Scripts.Canvas.Overlays;
+using Assets.Scripts.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,11 @@ namespace Assets.Scripts.Utils
 {
     public class GlobalProperties
     {
-        public static bool IsOverlayPanelOpen()
-        {
-            return GlobalGameObjects.OverlayManager.Get().GetComponent<OverlayManager>().IsOverlayOpen;
-        }
+        public static bool IsOverlayPanelOpen;
 
         public static bool IsInBuildMode()
         {
-            return GlobalGameObjects.World.Get().GetComponent<BuildMode>().RuntimeMode == Misc.BuilderMode.DesignMode;
+            return Globals.BuildMode == BuilderMode.DesignMode;
         }
     }
 }

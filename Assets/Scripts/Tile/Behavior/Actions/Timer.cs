@@ -38,9 +38,9 @@ namespace Assets.Scripts.Actions
             Counter--;
         }
 
-        public override void UpdateUI(GameObject gameObject)
+        public override void UpdateUI(GameObject gameObject, bool preview = false)
         {
-            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Timer);
+            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Timer, preview);
             gameObject.GetComponent<ImageSetter>().ActivateVisual("Special/Timer/Icon");
             gameObject.GetComponent<ImageSetter>().DisableVisual("Special/Timer/3");
             gameObject.GetComponent<ImageSetter>().DisableVisual("Special/Timer/2");

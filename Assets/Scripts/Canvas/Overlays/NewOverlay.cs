@@ -21,7 +21,7 @@ namespace Assets.Scripts.Canvas.Overlays
 
         public void CreateWorld()
         {
-            var createTiles = GlobalGameObjects.World.Get().GetComponent<CreateTiles>();
+            var createTiles = FindObjectOfType<CreateTiles>();
             createTiles.rows = GetRows();
             createTiles.columns = GetColumns();
             createTiles.RebuildWorld();

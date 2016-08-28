@@ -59,9 +59,9 @@ namespace Assets.Scripts.Tile.Behavior.Triggers.Directions
             base.Reset();
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
-            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Bridge, ImageSetter.Angle.Down);
+            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Bridge, ImageSetter.Angle.Down, preview);
             base.UpdateUI(gameobject);
         }
     }

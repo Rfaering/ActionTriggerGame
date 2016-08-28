@@ -11,26 +11,12 @@ namespace Assets.Scripts.Buttons
         private const string Actions = "Actions";
         private const string Play = "Play";
         private const string Reset = "Reset";
-            
+
         public GameObject[] TriggerButtons;
         public GameObject[] ActionButtons;
 
         public void Start()
         {
-            DisableAllButtons();
-
-            TriggerButtons = GetChildrens(Triggers);
-            ActionButtons = GetChildrens(Actions);
-        }
-
-        private static GameObject[] GetChildrens(string name)
-        {
-            List<GameObject> children = new List<GameObject>();
-            foreach (Transform child in GameObject.Find(name).transform)
-            {
-                children.Add(child.gameObject);
-            }
-            return children.ToArray();
         }
 
         public void RenderOptionsForGameObject(GameObject gameobject)
@@ -51,7 +37,7 @@ namespace Assets.Scripts.Buttons
                 SetLookAndFeel(behaviors, TriggerButtons);
             }
         }
-        
+
         private bool RenderBehaviorButton(BehaviorBase behavior)
         {
             var isInBuildMode = GlobalProperties.IsInBuildMode();
@@ -94,7 +80,8 @@ namespace Assets.Scripts.Buttons
             {
                 var behavior = behaviors[i];
                 var button = buttons[i];
-                button.GetComponent<Layout>().SetLayoutBasedOnBehavior(behavior);
+                button.GetComponent<Layout>()
+                    .SetLayoutBasedOnBehavior(behavior);
             }
         }
 

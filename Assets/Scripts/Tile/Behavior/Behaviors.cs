@@ -55,11 +55,14 @@ namespace Assets.Scripts.World.Tile
 
         public void Reset()
         {
+            var mirror = FindObjectOfType<Mirror>();
+
             if (AllActions.Any(x => x.Available))
             {
                 foreach (var action in AllActions.Where(x => x.Active))
                 {
                     action.Active = false;
+                    mirror.RemoveSelection(action._owner, action.Name);
                 }
             }
 
@@ -68,6 +71,7 @@ namespace Assets.Scripts.World.Tile
                 foreach (var trigger in AllTriggers.Where(x => x.Active))
                 {
                     trigger.Active = false;
+                    mirror.RemoveSelection(trigger._owner, trigger.Name);
                 }
             }
         }
@@ -89,10 +93,10 @@ namespace Assets.Scripts.World.Tile
             {
                 new UpDown(gameObject),
                 new LeftRight(gameObject),
-                new UpRight(gameObject),
-                new DownLeft(gameObject),
                 new LeftUp(gameObject),
+                new UpRight(gameObject),
                 new RightDown(gameObject),
+                new DownLeft(gameObject),
                 new Cross(gameObject),
                 new BridgeUpDown(gameObject)
             };
@@ -105,7 +109,8 @@ namespace Assets.Scripts.World.Tile
                 new Timer(gameObject),
                 new Lock(gameObject),
                 new Key(gameObject),
-                new Well(gameObject),
+                new BlackHole(gameObject),
+                new Bacteria(gameObject)
             };
         }
 

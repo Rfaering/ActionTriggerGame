@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Tile;
 using Assets.Scripts.Utils;
-using Assets.Scripts.World.Tile;
-using System;
 using UnityEngine;
 
 namespace Assets.Scripts.Actions
@@ -25,9 +23,9 @@ namespace Assets.Scripts.Actions
             next.SetActive(true);
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
-            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Water);
+            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Water, preview);
             base.UpdateUI(gameobject);
         }
     }

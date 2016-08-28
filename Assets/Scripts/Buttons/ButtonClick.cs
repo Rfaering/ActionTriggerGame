@@ -72,20 +72,12 @@ namespace Assets.Scripts.Buttons
         {
             if (removeSelection)
             {
-                if (Globals.BuildMode == BuilderMode.Running)
-                {
-                    FindObjectOfType<Mirror>().RemoveSelection(selectedBehavior.gameObject, name);
-                }
-
+                FindObjectOfType<Mirror>().RemoveSelection(selectedBehavior.gameObject, name);
                 selectedBehavior.RemoveSelection(this.gameObject.name);
             }
             else
             {
-                if (Globals.BuildMode == BuilderMode.Running)
-                {
-                    FindObjectOfType<Mirror>().SetMirror(selectedBehavior.gameObject, name);
-                }
-
+                FindObjectOfType<Mirror>().SetMirror(selectedBehavior.gameObject, name);
                 selectedBehavior.SelectBehavior(this.gameObject.name);
             }
         }
@@ -99,7 +91,7 @@ namespace Assets.Scripts.Buttons
 
         private static void ToggleAvailibility(BehaviorBase behavior, bool newValue)
         {
-            var behaviors = GlobalGameObjects.World.Get().GetComponentsInChildren<Selection>();
+            var behaviors = FindObjectOfType<Runner>().GetComponentsInChildren<Selection>();
 
             foreach (var item in behaviors.Where(x => x.Selected))
             {

@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using Assets.Scripts.Misc;
 using Assets.Scripts.Actions;
-using Assets.Scripts;
 using Assets.Scripts.Utils;
 using Assets.Scripts.Canvas.Elements;
 using Assets.Scripts.World.Tile;
@@ -13,47 +11,22 @@ using Assets.Scripts.World;
 using Assets.Scripts.Levels;
 using Assets.Scripts.Tile.Behavior;
 using Assets.Scripts.Tile.Behavior.Triggers.Directions;
+using Assets.Scripts.Buttons;
 
 public class Runner : MonoBehaviour
 {
     private Coroutine _activeCoroutine;
-    private BuildMode _buildMode;
     private LevelInfoManager _infoManager;
     // Use this for initialization
     void Start()
     {
         StopRunning();
-        StartCoroutine(LateStart(0.1f));
-        _buildMode = GetComponent<BuildMode>();
         _infoManager = FindObjectOfType<LevelInfoManager>();
-    }
-
-
-    IEnumerator LateStart(float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-
-        var level = GlobalGameObjects.World.Get().GetComponent<LoadLevel>();
-        level.CurrentLevelName = "Level 001";
-        level.LoadCurrentLevel();
-
-
-#if UNITY_ANDROID
-        _buildMode.RuntimeMode = BuilderMode.Running;
-#endif
-
-#if UNITY_IOS
-        _buildMode.RuntimeMode = BuilderMode.Running;
-#endif
-
-#if UNITY_STANDALONE_WIN
-        _buildMode.RuntimeMode = BuilderMode.DesignMode;
-#endif        
     }
 
     void Update()
     {
-        if (!GlobalProperties.IsOverlayPanelOpen())
+        if (!GlobalProperties.IsOverlayPanelOpen)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -89,7 +62,7 @@ public class Runner : MonoBehaviour
 
     private void StartRunning()
     {
-        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>(true).SetProgress(true);
+        FindObjectOfType<Canvas>().GetComponentInChildren<ProgressButton>(true).SetProgress(true);
         _activeCoroutine = StartCoroutine(BeginRuntimeMode());
     }
 
@@ -102,7 +75,7 @@ public class Runner : MonoBehaviour
         FindObjectOfType<Number>().HideNumber();
         _activeCoroutine = null;
 
-        GlobalGameObjects.Canvas.Get().GetComponentInChildren<ProgressButton>(true).SetProgress(false);
+        FindObjectOfType<CanvasMenu>().GetComponentInChildren<ProgressButton>(true).SetProgress(false);
 
         ResetVisualState();
     }
@@ -113,7 +86,7 @@ public class Runner : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(0.5f);
-            var overlayManager = GlobalGameObjects.OverlayManager.Get().GetComponent<OverlayManager>();
+            var overlayManager = FindObjectOfType<OverlayManager>();
             if (!overlayManager.IsOverlayOpen)
             {
                 // Only run win condition if the game is not in build mode                
@@ -168,6 +141,15 @@ public class Runner : MonoBehaviour
         {
             item.UpdateTrigger();
         }
+        var blackHoles = GetActions<BlackHole>(components);
+
+        if (blackHoles.Any(x => x.IsBlackholeActive))
+        {
+            foreach (var item in blackHoles)
+            {
+                item._owner.GetComponent<Behaviors>().Active = true;
+            }
+        }
 
         foreach (var item in components)
         {
@@ -182,6 +164,22 @@ public class Runner : MonoBehaviour
                 item.UpdateActions();
             }
         }
+
+        var bacterias = GetActions<Bacteria>(components);
+        foreach (var item in bacterias)
+        {
+            item.Move();
+        }
+    }
+
+    private static System.Collections.Generic.IEnumerable<T> GetActions<T>(Behaviors[] components) where T : class
+    {
+        string nameOfType = typeof(T).Name;
+
+        return components
+            .Select(x => x.GetComponent<SelectedBehavior>())
+            .Where(x => x.IsNameSelected(nameOfType))
+            .Select(x => x.GetBehavior(nameOfType) as T);
     }
 
     private bool IsWinConditionMet()
@@ -217,16 +215,21 @@ public class Runner : MonoBehaviour
             .Where(x => x.Active)
             .ToArray();
 
+        bool result = false;
+
         if (normalFlowers.Any(x => x.Done))
         {
             if (!normalFlowers.All(x => x.Done))
             {
                 foreach (var item in normalFlowers)
                 {
-                    item._owner.GetComponent<Animation>().Blend("Highlight");
+                    if (!item.Done)
+                    {
+                        item._owner.GetComponent<Animation>().Blend("Highlight");
+                    }
                 }
 
-                return true;
+                result = true;
             }
         }
 
@@ -236,14 +239,17 @@ public class Runner : MonoBehaviour
             {
                 foreach (var item in blueFlowers)
                 {
-                    item._owner.GetComponent<Animation>().Blend("Highlight");
+                    if (!item.Done)
+                    {
+                        item._owner.GetComponent<Animation>().Blend("Highlight");
+                    }
                 }
 
-                return true;
+                result = true;
             }
         }
 
-        return false;
+        return result;
     }
 
     private void ResetVisualState()

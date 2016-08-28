@@ -2,6 +2,7 @@
 using Assets.Scripts.Utils;
 using Assets.Scripts.World.Tile;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -16,7 +17,7 @@ namespace Assets.Scripts
 
         public void Update()
         {
-            if (!GlobalProperties.IsOverlayPanelOpen())
+            if (!GlobalProperties.IsOverlayPanelOpen)
             {
                 var runner = FindObjectOfType<Runner>();
 
@@ -26,6 +27,11 @@ namespace Assets.Scripts
                     {
                         behaviors.Reset();
                     }
+                }
+
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    SceneManager.LoadScene(0);
                 }
 
                 if (Input.GetKeyDown(KeyCode.R))

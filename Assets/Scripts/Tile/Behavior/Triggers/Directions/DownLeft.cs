@@ -17,9 +17,9 @@ namespace Assets.Scripts.Triggers
             }
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
-            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Turn, ImageSetter.Angle.Down);
+            gameobject.GetComponent<ImageSetter>().SetHoseVisual(ImageSetter.HoseTypes.Turn, ImageSetter.Angle.Down, preview);
             base.UpdateUI(gameobject);
         }
     }

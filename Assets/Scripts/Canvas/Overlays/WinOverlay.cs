@@ -13,7 +13,7 @@ namespace Assets.Scripts.Canvas.Overlays
 
         public void Start()
         {
-            _loadLevels = GlobalGameObjects.World.Get().GetComponent<LoadLevel>();
+            _loadLevels = FindObjectOfType<LoadLevel>();
             _overlayManager = GetComponentInParent<OverlayManager>();
         }
 
@@ -66,12 +66,29 @@ namespace Assets.Scripts.Canvas.Overlays
             _overlayManager.CloseActiveOverlay();
             _loadLevels.CurrentLevelName = LevelsInfo.GetNextLevel(_loadLevels.CurrentLevelName);
             _loadLevels.LoadCurrentLevel();
+            SetReviewButtonText("Comment\n(Beta)");
+        }
+
+        public void ReviewSent()
+        {
+            SetReviewButtonText("Thanks");
         }
 
         public void RestartLevel()
         {
             _loadLevels.LoadCurrentLevel();
             _overlayManager.CloseActiveOverlay();
+        }
+
+        public void OpenReview()
+        {
+            _overlayManager.CloseActiveOverlay();
+            _overlayManager.OpenReviewOverlay();
+        }
+
+        private void SetReviewButtonText(string text)
+        {
+            transform.Find("Review").GetComponentInChildren<Text>().text = text;
         }
     }
 }

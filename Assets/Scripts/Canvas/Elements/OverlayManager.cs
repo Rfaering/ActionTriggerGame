@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Buttons;
 using Assets.Scripts.Canvas.Overlays;
+using Assets.Scripts.Utils;
 using UnityEngine;
 using UnityStandardAssets.ImageEffects;
 
@@ -8,11 +9,27 @@ namespace Assets.Scripts.Canvas.Elements
     public class OverlayManager : MonoBehaviour
     {
         public bool IsOverlayOpen { get { return Overlay != null; } }
-        public GameObject Overlay { get; set; }
+        private GameObject _overlay;
+
+        public GameObject Overlay
+        {
+            get { return _overlay; }
+            set
+            {
+                _overlay = value;
+                GlobalProperties.IsOverlayPanelOpen = IsOverlayOpen;
+            }
+        }
+
 
         public void OpenSaveOverlay()
         {
             FindAndOpenPanel<SaveOverlay>().SetInputField();
+        }
+
+        public void OpenReviewOverlay()
+        {
+            FindAndOpenPanel<ReviewOverlay>();
         }
 
         public void OpenNewBoardOverlay()

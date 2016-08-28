@@ -1,7 +1,5 @@
 ﻿using Assets.Scripts.Misc;
-using Assets.Scripts.Utils;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Assets.Scripts.Buttons
 {
@@ -10,7 +8,7 @@ namespace Assets.Scripts.Buttons
         public void SetLayoutBasedOnBehavior(BehaviorBase behavior)
         {
             behavior.ClearUI(gameObject);
-            behavior.UpdateUI(gameObject);
+            behavior.UpdateUI(gameObject, false);
             gameObject.SetActive(true);
             gameObject.name = behavior.Name;
             if( Globals.InputMode == InputMode.Buttons)

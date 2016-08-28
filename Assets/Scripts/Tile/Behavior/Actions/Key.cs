@@ -23,9 +23,9 @@ namespace Assets.Scripts.Tile.Behavior.Actions
             }
         }
 
-        public override void UpdateUI(GameObject gameObject)
+        public override void UpdateUI(GameObject gameObject, bool preview = false)
         {
-            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Key);
+            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Key, preview);
             base.UpdateUI(gameObject);
         }
     }

@@ -19,11 +19,11 @@ namespace Assets.Scripts.Canvas.Overlays
 
         public void Save()
         {
-            var saveLevel = GlobalGameObjects.World.Get().GetComponent<SaveLevel>();
+            var saveLevel = FindObjectOfType<SaveLevel>();
             saveLevel.SaveLevelName = GetInputField();
             saveLevel.SaveCurrentLevel();
             GetComponentInParent<OverlayManager>().CloseActiveOverlay();
-            GlobalGameObjects.DesignPanel.Get().GetComponentInChildren<LevelsDropdown>().PopulateOptions();
+            FindObjectOfType<OverlayManager>().GetComponentInChildren<LevelsDropdown>().PopulateOptions();
         }
     }
 }

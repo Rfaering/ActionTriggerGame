@@ -20,7 +20,9 @@ namespace Assets.Scripts.World
         public void Start()
         {
             _levelInfoManager = GetComponent<LevelInfoManager>();
-            _menu = GlobalGameObjects.Canvas.Get().GetComponent<CanvasMenu>();
+            _menu = FindObjectOfType<CanvasMenu>();
+            CurrentLevelName = string.Format("Level {0:000}", Globals.InitialLevel);
+            LoadCurrentLevel();
         }
 
         public void LoadCurrentLevel()
@@ -115,7 +117,7 @@ namespace Assets.Scripts.World
 
             FindObjectOfType<Mirror>().IsMirrorEnabled = levelData.Mirror;
 
-            GlobalGameObjects.World.Get().GetComponent<Runner>().StopRunning();
+            FindObjectOfType<Runner>().StopRunning();
 
             foreach (var animation in GetComponentsInChildren<Visual>().Select(x => x.gameObject.GetComponent<Animation>()))
             {

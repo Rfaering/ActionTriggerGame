@@ -27,7 +27,7 @@ namespace Assets.Scripts.Triggers
         }
         
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
             //gameobject.GetComponent<ImageSetter>().SetImage("Trigger/Full", Icon);
         }

@@ -24,7 +24,7 @@ namespace Assets.Scripts.Tile
         private void UpdateInput()
         {
             if (GlobalProperties.IsInBuildMode() &&
-                !GlobalProperties.IsOverlayPanelOpen() &&
+                !GlobalProperties.IsOverlayPanelOpen &&
                 GetComponent<Selection>().Selected &&
                 Input.GetKeyDown(KeyCode.V))
             {

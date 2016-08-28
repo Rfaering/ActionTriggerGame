@@ -34,7 +34,7 @@ namespace Assets.Scripts.Canvas.Elements
 
         public void SetSelectedLevel()
         {
-            var loadLevel = GlobalGameObjects.World.Get().GetComponent<LoadLevel>();
+            var loadLevel = FindObjectOfType<LoadLevel>();
             loadLevel.CurrentLevelName = GetSelectedLevel();
             loadLevel.LoadCurrentLevel();
         }

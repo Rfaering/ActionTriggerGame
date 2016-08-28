@@ -19,31 +19,38 @@ namespace Assets.Scripts
             }
         }
 
+        public void Awake()
+        {
+            RuntimeMode = Globals.BuildMode;
+        }
+
         void Update()
         {
-            if (!GlobalProperties.IsOverlayPanelOpen())
+            if (!GlobalProperties.IsOverlayPanelOpen)
             {
                 if (Input.GetKeyDown(KeyCode.S))
                 {
                     RuntimeMode = RuntimeMode == BuilderMode.DesignMode ? BuilderMode.Running : BuilderMode.DesignMode;
+                    var level = FindObjectOfType<LoadLevel>();
+                    level.LoadCurrentLevel();
                 }
             }
         }
 
         private void SetNewRuntimeMode(BuilderMode value)
         {
-            GlobalGameObjects.DesignPanel.Get().GetComponent<DesignPanelVisibility>().SetVisibility(value == BuilderMode.DesignMode);
 
-            foreach (var visibility in GlobalGameObjects.World.Get().GetComponentsInChildren<Visibility>(true))
+            FindObjectOfType<CanvasMenu>()
+                .GetComponentInChildren<DesignPanelVisibility>(true)
+                .SetVisibility(value == BuilderMode.DesignMode);
+
+            foreach (var visibility in FindObjectOfType<Runner>().GetComponentsInChildren<Visibility>(true))
             {
                 visibility.UpdateVisiblity();
             }
 
             UnSelectAll();
             GetComponent<Runner>().StopRunning();
-
-            var level = FindObjectOfType<LoadLevel>();
-            level.LoadCurrentLevel();
         }
 
         private void UnSelectAll()

@@ -8,22 +8,62 @@ namespace Assets.Scripts.Utils
     public class ImageSetter : MonoBehaviour
     {
         public enum HoseTypes { Straight, Turn, Cross, Bridge }
-        public enum SpecialTypes { Water, Flower, FlowerBlue, Timer, Lock, Key, Well }
+        public enum SpecialTypes { Water, Flower, FlowerBlue, Timer, Lock, Key, BlackHole, Bacteria }
         public enum Angle { Down = 0, Right = 90, Up = 180, Left = 270 }
 
         private Color disabledColor = new Color(0.5f, 0.5f, 0.5f, 1.0f);
         private Color enabledColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        public void SetHoseVisual(HoseTypes type, Angle angle)
+        private Color previewColor = new Color(1.0f, 1.0f, 1.0f, 0.3f);
+
+        public void SetHoseVisual(HoseTypes type, Angle angle, bool preview)
         {
             var visualGameObject = transform.Find("Hose/" + Enum.GetName(typeof(HoseTypes), type)).gameObject;
             visualGameObject.transform.localRotation = Quaternion.Euler(new Vector3(90, ((float)angle), 0));
+            var spriteRenderer = visualGameObject.GetComponent<SpriteRenderer>();
+            if (preview)
+            {
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = previewColor;
+                }
+            }
+            else
+            {
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = enabledColor;
+                }
+            }
+
             visualGameObject.SetActiveRecursively(true);
         }
 
-        public void SetSpecialVisual(SpecialTypes type)
+        public GameObject GetVisualOf(SpecialTypes type)
+        {
+            return transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), type)).gameObject;
+        }
+
+        public void SetSpecialVisual(SpecialTypes type, bool preview)
         {
             var visualGameObject = transform.Find("Special/" + Enum.GetName(typeof(SpecialTypes), type)).gameObject;
+
+            var spriteRenderer = visualGameObject.GetComponent<SpriteRenderer>();
+            if (preview)
+            {
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = previewColor;
+                }
+            }
+            else
+            {
+                if (spriteRenderer != null)
+                {
+                    spriteRenderer.color = enabledColor;
+                }
+            }
+
             visualGameObject.SetActiveRecursively(true);
         }
 

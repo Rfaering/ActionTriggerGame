@@ -27,9 +27,9 @@ namespace Assets.Scripts.Actions
             next.SetActive(true);
         }
 
-        public override void UpdateUI(GameObject gameobject)
+        public override void UpdateUI(GameObject gameobject, bool preview = false)
         {
-            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Flower);
+            gameobject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Flower, preview);
             base.UpdateUI(gameobject);
         }
     }

@@ -16,7 +16,7 @@ namespace Assets.Scripts.Tile.Behavior.Actions
         public void Unlock()
         {
             Locked = false;
-            _owner.GetComponent<ImageSetter>().RemoveSpecialVisual(ImageSetter.SpecialTypes.Lock);
+            _owner.GetComponent<Animation>().Play("Unlock");
             if (_owner.GetComponent<Behaviors>().Active)
             {
                 Execute(_owner);
@@ -31,9 +31,9 @@ namespace Assets.Scripts.Tile.Behavior.Actions
             }
         }
 
-        public override void UpdateUI(GameObject gameObject)
+        public override void UpdateUI(GameObject gameObject, bool preview = false)
         {
-            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Lock);
+            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Lock, preview);
             base.UpdateUI(gameObject);
         }
 
