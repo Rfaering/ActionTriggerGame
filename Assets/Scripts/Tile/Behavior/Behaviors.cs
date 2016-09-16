@@ -91,6 +91,10 @@ namespace Assets.Scripts.World.Tile
         {
             AllTriggers = new Trigger[]
             {
+                new Up(gameObject),
+                new Down(gameObject),
+                new Right(gameObject),
+                new Left(gameObject),
                 new UpDown(gameObject),
                 new LeftRight(gameObject),
                 new LeftUp(gameObject),
@@ -137,6 +141,11 @@ namespace Assets.Scripts.World.Tile
         internal BehaviorBase GetBehavior(string name)
         {
             return AllBehaviors.FirstOrDefault(x => x.Name == name);
+        }
+
+        internal bool IsAvailableBridgeTile()
+        {
+            return GetBehavior("BridgeUpDown").Available || GetBehavior("BridgeUpDown").Active;
         }
 
         internal BehaviorBase[] GetBehaviorList(BehaviorTypes behaviorType)

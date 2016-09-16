@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Canvas.Elements;
+﻿using Assets.Scripts.Buttons;
+using Assets.Scripts.Canvas.Elements;
 using Assets.Scripts.Canvas.Overlays;
 using Assets.Scripts.Misc;
 using Assets.Scripts.World;
@@ -15,12 +16,12 @@ namespace Assets.Scripts.Levels
         private class LevelInfo
         {
             public string Name { get; set; }
-            public string Description { get; set; }
+            public string Hint { get; set; }
         }
 
-        private LevelInfo[] InfoLevels = new LevelInfo[]
+        private LevelInfo[] Hints = new LevelInfo[]
         {
-            new LevelInfo() { Name = "Level 001", Description = "Connect water to flower" }
+            new LevelInfo() { Name = "Level 001", Hint = "Hint1" }
         };
 
         public void ShowWinForCurrentLevel()
@@ -55,17 +56,21 @@ namespace Assets.Scripts.Levels
 
         public void StoreProgress(int newLevel)
         {
-            PlayerPrefs.SetInt("Level", newLevel);
+            var maxLevel = PlayerPrefs.GetInt("Level");
+            if (newLevel > maxLevel)
+            {
+                PlayerPrefs.SetInt("Level", newLevel);
+            }
         }
 
         public void ShowInfoForLevel(string level)
         {
-            var currentLevelInfo = InfoLevels.FirstOrDefault(x => x.Name == level);
+            var currentLevelInfo = Hints.FirstOrDefault(x => x.Name == level);
             if (currentLevelInfo != null)
             {
-                FindObjectOfType<OverlayManager>()
-                    .OpenInfoOverlay()
-                    .SetImageAndDescription("Info/" + currentLevelInfo.Name, currentLevelInfo.Description);
+                FindObjectOfType<CanvasMenu>()
+                    .GetComponentInChildren<Hint>(true)
+                    .PlayHint(currentLevelInfo.Hint);
             }
 
         }

@@ -70,7 +70,7 @@ namespace Assets.Scripts.Tile.Behavior
             _behaviors = GetComponent<Behaviors>();
         }
 
-        public BehaviorBase GetBehavior(string name)
+        public BehaviorBase GetSelectedBehavior(string name)
         {
             if (SelectedTrigger != null && SelectedTrigger.Name == name)
             {
@@ -87,7 +87,7 @@ namespace Assets.Scripts.Tile.Behavior
 
         public bool IsNameSelected(string name)
         {
-            return GetBehavior(name) != null;
+            return GetSelectedBehavior(name) != null;
         }
 
         public void RemoveSelection(string name)
@@ -114,9 +114,24 @@ namespace Assets.Scripts.Tile.Behavior
             SelectBehavior(behavior);
         }
 
+        public string GetPreview()
+        {
+            return _preview != null ? _preview.Name : null;
+        }
+
         public void SetPreview(string name)
         {
             var behavior = _behaviors.GetBehavior(name);
+            if (behavior == null)
+            {
+                return;
+            }
+
+            if (_preview != null)
+            {
+                ClearPreview();
+            }
+
             _preview = behavior;
 
             if (_preview is Action && SelectedAction != null)
@@ -162,7 +177,10 @@ namespace Assets.Scripts.Tile.Behavior
 
         public void SelectBehavior(BehaviorBase behavior)
         {
-            BehaviorBase oldBehavior = null;
+            if (behavior == null)
+            {
+                return;
+            }
             if (IsNameSelected(behavior.Name))
             {
                 return;

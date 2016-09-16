@@ -2,6 +2,7 @@
 using Assets.Scripts.World;
 using Assets.Scripts.Canvas.Elements;
 using UnityEngine.UI;
+using Assets.Scripts.Buttons;
 
 namespace Assets.Scripts.Canvas.Overlays
 {
@@ -23,7 +24,7 @@ namespace Assets.Scripts.Canvas.Overlays
             saveLevel.SaveLevelName = GetInputField();
             saveLevel.SaveCurrentLevel();
             GetComponentInParent<OverlayManager>().CloseActiveOverlay();
-            FindObjectOfType<OverlayManager>().GetComponentInChildren<LevelsDropdown>().PopulateOptions();
+            FindObjectOfType<CanvasMenu>().GetComponentInChildren<LevelsDropdown>().PopulateOptions();
         }
     }
 }

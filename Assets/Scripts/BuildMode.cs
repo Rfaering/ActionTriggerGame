@@ -40,6 +40,15 @@ namespace Assets.Scripts
         private void SetNewRuntimeMode(BuilderMode value)
         {
 
+            if (value == BuilderMode.DesignMode)
+            {
+                Globals.InputMode = InputMode.Buttons;
+            }
+            if (value == BuilderMode.Running)
+            {
+                Globals.InputMode = InputMode.Connect;
+            }
+
             FindObjectOfType<CanvasMenu>()
                 .GetComponentInChildren<DesignPanelVisibility>(true)
                 .SetVisibility(value == BuilderMode.DesignMode);

@@ -7,7 +7,7 @@ namespace Assets.Scripts.Utils
 {
     public class ImageSetter : MonoBehaviour
     {
-        public enum HoseTypes { Straight, Turn, Cross, Bridge }
+        public enum HoseTypes { Straight, Turn, Cross, Bridge, Center }
         public enum SpecialTypes { Water, Flower, FlowerBlue, Timer, Lock, Key, BlackHole, Bacteria }
         public enum Angle { Down = 0, Right = 90, Up = 180, Left = 270 }
 
@@ -20,19 +20,19 @@ namespace Assets.Scripts.Utils
         {
             var visualGameObject = transform.Find("Hose/" + Enum.GetName(typeof(HoseTypes), type)).gameObject;
             visualGameObject.transform.localRotation = Quaternion.Euler(new Vector3(90, ((float)angle), 0));
-            var spriteRenderer = visualGameObject.GetComponent<SpriteRenderer>();
+            var spriteRenderers = visualGameObject.GetComponentsInChildren<SpriteRenderer>();
             if (preview)
             {
-                if (spriteRenderer != null)
+                foreach (var item in spriteRenderers)
                 {
-                    spriteRenderer.color = previewColor;
+                    item.color = previewColor;
                 }
             }
             else
             {
-                if (spriteRenderer != null)
+                foreach (var item in spriteRenderers)
                 {
-                    spriteRenderer.color = enabledColor;
+                    item.color = enabledColor;
                 }
             }
 

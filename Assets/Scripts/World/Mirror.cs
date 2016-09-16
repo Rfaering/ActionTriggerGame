@@ -70,7 +70,15 @@ public class Mirror : MonoBehaviour
 
     public string SwapBehavior(string behaviorName)
     {
-        if (behaviorName == "LeftUp")
+        if (behaviorName == "Left")
+        {
+            return "Right";
+        }
+        else if (behaviorName == "Right")
+        {
+            return "Left";
+        }
+        else if (behaviorName == "LeftUp")
         {
             return "UpRight";
         }

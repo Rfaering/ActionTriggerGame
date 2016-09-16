@@ -2,6 +2,7 @@
 using Assets.Scripts.Misc;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Assets.Scripts.World
 {
@@ -34,7 +35,7 @@ namespace Assets.Scripts.World
         }
 
         private void Create(string underChild, BehaviorTypes buttonType, int count)
-        {            
+        {
             var canvasMenu = GetComponent<CanvasMenu>();
             List<GameObject> gameObjects = new List<GameObject>();
             for (int i = 0; i < count; i++)
@@ -78,6 +79,33 @@ namespace Assets.Scripts.World
             else
             {
                 canvasMenu.ActionButtons = gameObjects.ToArray();
+            }
+        }
+
+        internal void HideButtons(BehaviorTypes triggers)
+        {
+            if (triggers == BehaviorTypes.Triggers)
+            {
+                Hide("Triggers");
+            }
+            if (triggers == BehaviorTypes.Actions)
+            {
+                Hide("Actions");
+            }
+        }
+
+        private void Hide(string underChild)
+        {
+            List<Transform> children = new List<Transform>();
+
+            foreach (Transform t in this.transform.FindChild(underChild).transform)
+            {
+                children.Add(t);
+            }
+
+            foreach (Transform t in children)
+            {
+                t.gameObject.SetActive(false);
             }
         }
 

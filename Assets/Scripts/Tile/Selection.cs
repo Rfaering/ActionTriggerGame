@@ -17,7 +17,7 @@ namespace Assets.Scripts.Tile
 
         public void Update()
         {
-            if (Globals.InputMode == InputMode.DragAndDrop)
+            if (Globals.InputMode != InputMode.Buttons)
             {
                 return;
             }

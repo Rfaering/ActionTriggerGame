@@ -61,6 +61,12 @@ namespace Assets.Scripts.World
                 {
                     SetRuntimeButtonLayouts(BehaviorTypes.Actions);
                     SetRuntimeButtonLayouts(BehaviorTypes.Triggers);
+
+                    if (Globals.InputMode == InputMode.Connect)
+                    {
+                        var createButtons = FindObjectOfType<CreateButtons>();
+                        createButtons.HideButtons(BehaviorTypes.Triggers);
+                    }
                 }
                 else
                 {

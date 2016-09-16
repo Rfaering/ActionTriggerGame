@@ -179,7 +179,7 @@ public class Runner : MonoBehaviour
         return components
             .Select(x => x.GetComponent<SelectedBehavior>())
             .Where(x => x.IsNameSelected(nameOfType))
-            .Select(x => x.GetBehavior(nameOfType) as T);
+            .Select(x => x.GetSelectedBehavior(nameOfType) as T);
     }
 
     private bool IsWinConditionMet()
