@@ -1,46 +1,41 @@
-﻿using Assets.Scripts.Utils;
-using Assets.Scripts.World.Tile;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts.Tile.Behavior.Actions
+public class Lock : Action
 {
-    public class Lock : Scripts.Actions.Action
+    public bool Locked { get; set; }
+
+    public Lock(GameObject owner) : base(owner)
     {
-        public bool Locked { get; set; }
+        Locked = true;
+    }
 
-        public Lock(GameObject owner) : base(owner)
+    public void Unlock()
+    {
+        Locked = false;
+        _owner.GetComponent<Animation>().Play("Unlock");
+        if (_owner.GetComponent<Behaviors>().Active)
         {
-            Locked = true;
+            Execute(_owner);
         }
+    }
 
-        public void Unlock()
+    public override void Execute(GameObject gameObject)
+    {
+        if (Locked == false)
         {
-            Locked = false;
-            _owner.GetComponent<Animation>().Play("Unlock");
-            if (_owner.GetComponent<Behaviors>().Active)
-            {
-                Execute(_owner);
-            }
+            gameObject.GetComponent<WaterState>().Watered = true;
         }
+    }
 
-        public override void Execute(GameObject gameObject)
-        {
-            if (Locked == false)
-            {
-                gameObject.GetComponent<WaterState>().Watered = true;
-            }
-        }
+    public override void UpdateUI(GameObject gameObject, bool preview = false)
+    {
+        gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Lock, preview);
+        base.UpdateUI(gameObject);
+    }
 
-        public override void UpdateUI(GameObject gameObject, bool preview = false)
-        {
-            gameObject.GetComponent<ImageSetter>().SetSpecialVisual(ImageSetter.SpecialTypes.Lock, preview);
-            base.UpdateUI(gameObject);
-        }
-
-        public override void Reset()
-        {
-            Locked = true;
-            base.Reset();
-        }
+    public override void Reset()
+    {
+        Locked = true;
+        base.Reset();
     }
 }

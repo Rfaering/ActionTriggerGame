@@ -1,57 +1,65 @@
-﻿using Assets.Scripts.Buttons;
-using Assets.Scripts.Misc;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
-namespace Assets.Scripts.Tile
+public class Visual : MonoBehaviour
 {
-    public class Visual : MonoBehaviour
+    private Runner _runner;
+    private ConnectTiles _connectTiles;
+
+    public bool Editable { get; set; }
+    public bool InChain;
+    public bool NextToChain;
+
+    void Start()
     {
-        private Runner _runner;
+        _runner = FindObjectOfType<Runner>();
+        _connectTiles = GetComponent<ConnectTiles>();
+    }
 
-        public bool Editable { get; set; }
-        public bool InChain;
-
-        void Start()
+    void Update()
+    {
+        if (Globals.InputMode == InputMode.Connect)
         {
-            _runner = FindObjectOfType<Runner>();
-        }
-
-        void Update()
-        {
-            if (Globals.InputMode == InputMode.Connect)
+            if (InChain)
             {
-                if (InChain)
+                bool willEdit = _connectTiles.ChainWillBeAdded;
+                if (willEdit)
                 {
-                    transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f);
+                    transform.Find("Background").GetComponent<Image>().color = new Color(0.6f, 1.0f, 0.6f);
                 }
                 else
                 {
-                    transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.30f, 0.2f, 0.0f);
+                    transform.Find("Background").GetComponent<Image>().color = new Color(1.0f, 0.6f, 0.6f);
                 }
-                return;
-            }
-
-            if (_runner.IsRunning())
-            {
-                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.30f, 0.2f, 0.0f);
-                return;
-            }
-
-            if (Globals.InputMode == InputMode.DragAndDrop && DraggableButton.itemBeingDragged == null)
-            {
-                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.30f, 0.2f, 0.0f);
-                return;
-            }
-
-            if (Editable)
-            {
-                transform.Find("Background").GetComponent<SpriteRenderer>().color = new Color(0.0f, 0.4f, 0.0f);
             }
             else
             {
-                transform.Find("Background").GetComponent<SpriteRenderer>().color = Color.red;
+                transform.Find("Background").GetComponent<Image>().color = new Color(0.30f, 0.2f, 0.0f);
             }
 
+            return;
         }
+
+        if (_runner.IsRunning())
+        {
+            transform.Find("Background").GetComponent<Image>().color = new Color(0.30f, 0.2f, 0.0f);
+            return;
+        }
+
+        if (Globals.InputMode == InputMode.DragAndDrop && DraggableButton.itemBeingDragged == null)
+        {
+            transform.Find("Background").GetComponent<Image>().color = new Color(0.30f, 0.2f, 0.0f);
+            return;
+        }
+
+        if (Editable)
+        {
+            transform.Find("Background").GetComponent<Image>().color = new Color(0.0f, 0.4f, 0.0f);
+        }
+        else
+        {
+            transform.Find("Background").GetComponent<Image>().color = Color.red;
+        }
+
     }
 }

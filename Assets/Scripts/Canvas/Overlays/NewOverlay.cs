@@ -1,51 +1,46 @@
-﻿using Assets.Scripts.Canvas.Elements;
-using Assets.Scripts.World;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.Canvas.Overlays
+public class NewOverlay : MonoBehaviour
 {
-    public class NewOverlay : MonoBehaviour
+    private const int DefaultValue = 4;
+
+    public int GetRows()
     {
-        private const int DefaultValue = 4;
+        return GetValue("Rows");
+    }
 
-        public int GetRows()
+    public int GetColumns()
+    {
+        return GetValue("Columns");
+    }
+
+    public void CreateWorld()
+    {
+        var createTiles = FindObjectOfType<CreateTiles>();
+        createTiles.rows = GetRows();
+        createTiles.columns = GetColumns();
+        createTiles.RebuildWorld();
+
+        createTiles.GetComponent<LoadLevel>().CurrentLevelName = "New Level";
+        createTiles.GetComponent<SaveLevel>().SaveLevelName = "New Level";
+
+        FindObjectOfType<SaveLevel>().SaveLevelName = "";
+
+
+        GetComponentInParent<OverlayManager>().CloseActiveOverlay();
+    }
+
+    private int GetValue(string childName)
+    {
+        try
         {
-            return GetValue("Rows");
+            return int.Parse(transform.Find(childName).GetComponent<InputField>().text);
+
         }
-
-        public int GetColumns()
+        catch
         {
-            return GetValue("Columns");
-        }
-
-        public void CreateWorld()
-        {
-            var createTiles = FindObjectOfType<CreateTiles>();
-            createTiles.rows = GetRows();
-            createTiles.columns = GetColumns();
-            createTiles.RebuildWorld();
-
-            createTiles.GetComponent<LoadLevel>().CurrentLevelName = "New Level";
-            createTiles.GetComponent<SaveLevel>().SaveLevelName = "New Level";
-
-            FindObjectOfType<SaveLevel>().SaveLevelName = "";
-
-
-            GetComponentInParent<OverlayManager>().CloseActiveOverlay();
-        }
-
-        private int GetValue(string childName)
-        {
-            try
-            {
-                return int.Parse(transform.Find(childName).GetComponent<InputField>().text);
-
-            }
-            catch
-            {
-                return DefaultValue;
-            }
+            return DefaultValue;
         }
     }
 }

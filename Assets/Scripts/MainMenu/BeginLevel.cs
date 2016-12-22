@@ -1,6 +1,4 @@
-﻿using Assets.Scripts.Misc;
-using Assets.Scripts.World;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -11,7 +9,11 @@ public class BeginLevel : MonoBehaviour
     public void Start()
     {
         CurrentLevel = PlayerPrefs.GetInt("Level", 1);
-        transform.Find("MainMenu/Play").GetComponentInChildren<Text>().text = CurrentLevel == 1 ? "Play" : "Continue";
+        CurrentLevel = 1;
+
+        transform.Find("MainMenu/Play")
+            .GetComponentInChildren<Text>()
+            .text = CurrentLevel == 1 ? "Play" : "Continue";
     }
 
     public void BeginGame(int level)
@@ -20,13 +22,7 @@ public class BeginLevel : MonoBehaviour
         Globals.InitialLevel = level;
         SceneManager.LoadScene("Game");
     }
-
-    public void OnLevelWasLoaded(int level)
-    {
-        FindObjectOfType<LoadLevel>().CurrentLevelName = "Level " + level;
-        FindObjectOfType<LoadLevel>().LoadCurrentLevel();
-    }
-
+    
     public void BeginGame()
     {
         BeginGame(CurrentLevel);

@@ -1,59 +1,54 @@
-﻿using Assets.Scripts.Misc;
-using Assets.Scripts.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.Buttons
+public class ButtonEnabled : MonoBehaviour
 {
-    public class ButtonEnabled : MonoBehaviour
+    private bool _contentEnabled;
+
+    public bool ContentEnabled
     {
-        private bool _contentEnabled;
-
-        public bool ContentEnabled
+        get { return _contentEnabled; }
+        set
         {
-            get { return _contentEnabled; }
-            set
-            {
-                _contentEnabled = value;
-                _updateNextFrame = true;
-            }
-        }
-
-        private bool _updateNextFrame = false;
-
-        private BuildMode _buildMode;
-        private Runner _runner;
-        private ImageSetter _imageSetter;
-
-        public void Start()
-        {
+            _contentEnabled = value;
             _updateNextFrame = true;
-            _buildMode = FindObjectOfType<BuildMode>();
-            _imageSetter = GetComponent<ImageSetter>();
-            _runner = FindObjectOfType<Runner>();
+        }
+    }
+
+    private bool _updateNextFrame = false;
+
+    private BuildMode _buildMode;
+    private Runner _runner;
+    private ImageSetter _imageSetter;
+
+    public void Start()
+    {
+        _updateNextFrame = true;
+        _buildMode = FindObjectOfType<BuildMode>();
+        _imageSetter = GetComponent<ImageSetter>();
+        _runner = FindObjectOfType<Runner>();
+    }
+
+    public void Update()
+    {
+        if (_buildMode.RuntimeMode == BuilderMode.Running)
+        {
+            GetComponent<Button>().interactable = _contentEnabled && !_runner.IsRunning();
+        }
+        else
+        {
+            GetComponent<Button>().interactable = !_runner.IsRunning();
         }
 
-        public void Update()
+        if (_updateNextFrame)
         {
-            if (_buildMode.RuntimeMode == BuilderMode.Running)
+            if (ContentEnabled)
             {
-                GetComponent<Button>().interactable = _contentEnabled && !_runner.IsRunning();
+                _imageSetter.SetEnabledColor();
             }
             else
             {
-                GetComponent<Button>().interactable = !_runner.IsRunning();
-            }
-
-            if (_updateNextFrame)
-            {
-                if (ContentEnabled)
-                {
-                    _imageSetter.SetEnabledColor();
-                }
-                else
-                {
-                    _imageSetter.SetDisabledColor();
-                }
+                _imageSetter.SetDisabledColor();
             }
         }
     }

@@ -1,32 +1,27 @@
 ﻿using UnityEngine;
-using Assets.Scripts.Misc;
-using Assets.Scripts.Utils;
 
-namespace Assets.Scripts.Actions
+public abstract class Action : BehaviorBase
 {
-    public abstract class Action : BehaviorBase
+    public Action(GameObject owner) : base(owner)
     {
-        public Action(GameObject owner) : base(owner)
-        {
-        }
+    }
 
-        public abstract void Execute(GameObject gameObject);
+    public abstract void Execute(GameObject gameObject);
 
-        public override BehaviorTypes BehaviorType
+    public override BehaviorTypes BehaviorType
+    {
+        get
         {
-            get
-            {
-                return BehaviorTypes.Actions;
-            }
+            return BehaviorTypes.Actions;
         }
+    }
 
-        public override void ClearUI(GameObject gameObject)
-        {
-            gameObject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
-        }
+    public override void ClearUI(GameObject gameObject)
+    {
+        gameObject.GetComponent<ImageSetter>().ClearImages(BehaviorTypes.Actions);
+    }
 
-        public override void UpdateUI(GameObject gameObject, bool preview = false)
-        {
-        }
+    public override void UpdateUI(GameObject gameObject, bool preview = false)
+    {
     }
 }

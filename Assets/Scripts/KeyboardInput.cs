@@ -1,64 +1,58 @@
-﻿using Assets.Scripts.Tile.Behavior;
-using Assets.Scripts.Utils;
-using Assets.Scripts.World.Tile;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Assets.Scripts
+public class KeyboardInput : MonoBehaviour
 {
-    public class KeyboardInput : MonoBehaviour
+    private Runner _runner;
+
+    void Start()
     {
-        private Runner _runner;
+        _runner = FindObjectOfType<Runner>();
+    }
 
-        void Start()
+    public void Update()
+    {
+        if (!GlobalProperties.IsOverlayPanelOpen)
         {
-            _runner = FindObjectOfType<Runner>();
-        }
+            var runner = FindObjectOfType<Runner>();
 
-        public void Update()
-        {
-            if (!GlobalProperties.IsOverlayPanelOpen)
+            if (Input.GetKeyDown(KeyCode.C))
             {
-                var runner = FindObjectOfType<Runner>();
-
-                if (Input.GetKeyDown(KeyCode.C))
+                foreach (var behaviors in FindObjectsOfType<Behaviors>())
                 {
-                    foreach (var behaviors in FindObjectsOfType<Behaviors>())
-                    {
-                        behaviors.Reset();
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    SceneManager.LoadScene(0);
-                }
-
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    for (int i = 0; i < 100; i++)
-                    {
-                        if (_runner.IsBoardStateGoingToWin())
-                        {
-                            return;
-                        }
-                        CreateRandomLevel();
-                    }
-                }
-
-                if (Input.GetKeyDown(KeyCode.T))
-                {
-                    runner.NumberOfMovesToWinningState();
+                    behaviors.Reset();
                 }
             }
-        }
 
-        private static void CreateRandomLevel()
-        {
-            foreach (var behaviors in FindObjectsOfType<RandomBehavior>())
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                behaviors.SelectRandomAvailibleTriggerAndAction();
+                SceneManager.LoadScene(0);
             }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    if (_runner.IsBoardStateGoingToWin())
+                    {
+                        return;
+                    }
+                    CreateRandomLevel();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                runner.NumberOfMovesToWinningState();
+            }
+        }
+    }
+
+    private static void CreateRandomLevel()
+    {
+        foreach (var behaviors in FindObjectsOfType<RandomBehavior>())
+        {
+            behaviors.SelectRandomAvailibleTriggerAndAction();
         }
     }
 }

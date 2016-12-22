@@ -1,7 +1,4 @@
-﻿using Assets.Scripts.Misc;
-using Assets.Scripts.Tile;
-using Assets.Scripts.Tile.Behavior;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Mirror : MonoBehaviour
 {

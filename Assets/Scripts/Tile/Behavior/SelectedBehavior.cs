@@ -1,199 +1,192 @@
-﻿using Assets.Scripts.Actions;
-using Assets.Scripts.Misc;
-using Assets.Scripts.Triggers;
-using Assets.Scripts.World.Tile;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Assets.Scripts.Tile.Behavior
+public class SelectedBehavior : MonoBehaviour
 {
-    public class SelectedBehavior : MonoBehaviour
+    private Action _selectedAction;
+
+    public Action SelectedAction
     {
-        private Action _selectedAction;
-
-        public Action SelectedAction
+        get { return _selectedAction; }
+        set
         {
-            get { return _selectedAction; }
-            set
-            {
-                ClearPreview();
-                var oldValue = _selectedAction;
-                _selectedAction = value;
-                var newValue = _selectedAction;
+            ClearPreview();
+            var oldValue = _selectedAction;
+            _selectedAction = value;
+            var newValue = _selectedAction;
 
-                RemoveActivation(oldValue);
-                ApplyActivation(newValue);
-            }
+            RemoveActivation(oldValue);
+            ApplyActivation(newValue);
+        }
+    }
+
+
+    private Trigger _selectedTrigger;
+
+    public Trigger SelectedTrigger
+    {
+        get { return _selectedTrigger; }
+        set
+        {
+            ClearPreview();
+            var oldValue = _selectedTrigger;
+            _selectedTrigger = value;
+            var newValue = _selectedTrigger;
+
+            RemoveActivation(oldValue);
+            ApplyActivation(newValue);
+        }
+    }
+
+    private BehaviorBase _preview;
+    private BehaviorBase _covering;
+
+
+    private void ApplyActivation(BehaviorBase behavior)
+    {
+        if (behavior != null)
+        {
+            behavior.Active = true;
+        }
+    }
+
+    private void RemoveActivation(BehaviorBase behavior)
+    {
+        if (behavior != null)
+        {
+            behavior.Active = false;
+        }
+    }
+
+    private Behaviors _behaviors;
+
+    void Start()
+    {
+        _behaviors = GetComponent<Behaviors>();
+    }
+
+    public BehaviorBase GetSelectedBehavior(string name)
+    {
+        if (SelectedTrigger != null && SelectedTrigger.Name == name)
+        {
+            return SelectedTrigger;
         }
 
-
-        private Trigger _selectedTrigger;
-
-        public Trigger SelectedTrigger
+        if (SelectedAction != null && SelectedAction.Name == name)
         {
-            get { return _selectedTrigger; }
-            set
-            {
-                ClearPreview();
-                var oldValue = _selectedTrigger;
-                _selectedTrigger = value;
-                var newValue = _selectedTrigger;
-
-                RemoveActivation(oldValue);
-                ApplyActivation(newValue);
-            }
+            return SelectedAction;
         }
 
-        private BehaviorBase _preview;
-        private BehaviorBase _covering;
+        return null;
+    }
 
+    public bool IsNameSelected(string name)
+    {
+        return GetSelectedBehavior(name) != null;
+    }
 
-        private void ApplyActivation(BehaviorBase behavior)
+    public void RemoveSelection(string name)
+    {
+        if (SelectedTrigger != null && SelectedTrigger.Name == name)
         {
-            if (behavior != null)
-            {
-                behavior.Active = true;
-            }
+            SelectedTrigger = null;
         }
 
-        private void RemoveActivation(BehaviorBase behavior)
+        if (SelectedAction != null && SelectedAction.Name == name)
         {
-            if (behavior != null)
-            {
-                behavior.Active = false;
-            }
+            SelectedAction = null;
+        }
+    }
+
+    public bool HasBothSelected()
+    {
+        return SelectedAction != null && SelectedTrigger != null;
+    }
+
+    public void SelectBehavior(string name)
+    {
+        var behavior = _behaviors.GetBehavior(name);
+        SelectBehavior(behavior);
+    }
+
+    public string GetPreview()
+    {
+        return _preview != null ? _preview.Name : null;
+    }
+
+    public void SetPreview(string name)
+    {
+        var behavior = _behaviors.GetBehavior(name);
+        if (behavior == null)
+        {
+            return;
         }
 
-        private Behaviors _behaviors;
-
-        void Start()
+        if (_preview != null)
         {
-            _behaviors = GetComponent<Behaviors>();
+            ClearPreview();
         }
 
-        public BehaviorBase GetSelectedBehavior(string name)
+        _preview = behavior;
+
+        if (_preview is Action && SelectedAction != null)
         {
-            if (SelectedTrigger != null && SelectedTrigger.Name == name)
-            {
-                return SelectedTrigger;
-            }
-
-            if (SelectedAction != null && SelectedAction.Name == name)
-            {
-                return SelectedAction;
-            }
-
-            return null;
+            _covering = SelectedAction;
+            _covering.ClearUI();
         }
 
-        public bool IsNameSelected(string name)
+        if (_preview is Trigger && SelectedTrigger != null)
         {
-            return GetSelectedBehavior(name) != null;
+            _covering = SelectedTrigger;
+            _covering.ClearUI();
         }
 
-        public void RemoveSelection(string name)
+        if (_preview != null)
         {
-            if (SelectedTrigger != null && SelectedTrigger.Name == name)
-            {
-                SelectedTrigger = null;
-            }
+            _preview.UpdateUI(true);
+        }
+    }
 
-            if (SelectedAction != null && SelectedAction.Name == name)
-            {
-                SelectedAction = null;
-            }
+    public void ClearPreview()
+    {
+        if (_preview != null)
+        {
+            _preview.ClearUI();
+        }
+        if (_covering != null)
+        {
+            _covering.UpdateUI();
         }
 
-        public bool HasBothSelected()
+        _preview = null;
+        _covering = null;
+    }
+
+    public void RemoveSelection(BehaviorBase behavior)
+    {
+        if (IsNameSelected(behavior.Name))
         {
-            return SelectedAction != null && SelectedTrigger != null;
+            RemoveSelection(behavior.Name);
+        }
+    }
+
+    public void SelectBehavior(BehaviorBase behavior)
+    {
+        if (behavior == null)
+        {
+            return;
+        }
+        if (IsNameSelected(behavior.Name))
+        {
+            return;
         }
 
-        public void SelectBehavior(string name)
+        if (behavior.BehaviorType == BehaviorTypes.Actions)
         {
-            var behavior = _behaviors.GetBehavior(name);
-            SelectBehavior(behavior);
+            SelectedAction = behavior as Action;
         }
-
-        public string GetPreview()
+        if (behavior.BehaviorType == BehaviorTypes.Triggers)
         {
-            return _preview != null ? _preview.Name : null;
-        }
-
-        public void SetPreview(string name)
-        {
-            var behavior = _behaviors.GetBehavior(name);
-            if (behavior == null)
-            {
-                return;
-            }
-
-            if (_preview != null)
-            {
-                ClearPreview();
-            }
-
-            _preview = behavior;
-
-            if (_preview is Action && SelectedAction != null)
-            {
-                _covering = SelectedAction;
-                _covering.ClearUI();
-            }
-
-            if (_preview is Trigger && SelectedTrigger != null)
-            {
-                _covering = SelectedTrigger;
-                _covering.ClearUI();
-            }
-
-            if (_preview != null)
-            {
-                _preview.UpdateUI(true);
-            }
-        }
-
-        public void ClearPreview()
-        {
-            if (_preview != null)
-            {
-                _preview.ClearUI();
-            }
-            if (_covering != null)
-            {
-                _covering.UpdateUI();
-            }
-
-            _preview = null;
-            _covering = null;
-        }
-
-        public void RemoveSelection(BehaviorBase behavior)
-        {
-            if (IsNameSelected(behavior.Name))
-            {
-                RemoveSelection(behavior.Name);
-            }
-        }
-
-        public void SelectBehavior(BehaviorBase behavior)
-        {
-            if (behavior == null)
-            {
-                return;
-            }
-            if (IsNameSelected(behavior.Name))
-            {
-                return;
-            }
-
-            if (behavior.BehaviorType == BehaviorTypes.Actions)
-            {
-                SelectedAction = behavior as Action;
-            }
-            if (behavior.BehaviorType == BehaviorTypes.Triggers)
-            {
-                SelectedTrigger = behavior as Trigger;
-            }
+            SelectedTrigger = behavior as Trigger;
         }
     }
 }

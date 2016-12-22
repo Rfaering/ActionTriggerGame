@@ -1,96 +1,88 @@
-﻿using Assets.Scripts.Actions;
-using Assets.Scripts.Misc;
-using Assets.Scripts.Tile;
-using Assets.Scripts.Tile.Behavior.Actions;
-using Assets.Scripts.Tile.Behavior.Triggers.Directions;
-using Assets.Scripts.Triggers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.Scripts.World.Tile
+public class Behaviors : MonoBehaviour
 {
-    public class Behaviors : MonoBehaviour
+    public Trigger[] AllTriggers = new Trigger[0];
+    public Action[] AllActions = new Action[0];
+
+    public BehaviorBase[] AllBehaviors
     {
-        public Trigger[] AllTriggers = new Trigger[0];
-        public Action[] AllActions = new Action[0];
-
-        public BehaviorBase[] AllBehaviors
+        get
         {
-            get
-            {
-                List<BehaviorBase> behaviors = new List<BehaviorBase>();
-                behaviors.AddRange(AllTriggers);
-                behaviors.AddRange(AllActions);
-                return behaviors.ToArray();
-            }
+            List<BehaviorBase> behaviors = new List<BehaviorBase>();
+            behaviors.AddRange(AllTriggers);
+            behaviors.AddRange(AllActions);
+            return behaviors.ToArray();
         }
+    }
 
-        private bool _active;
+    private bool _active;
 
-        public bool Active
+    public bool Active
+    {
+        get { return _active; }
+        set
         {
-            get { return _active; }
-            set
+            _active = value;
+            if (!_active)
             {
-                _active = value;
-                if (!_active)
+                GetComponent<WaterState>().Watered = false;
+
+                var flower = GetComponent<Behaviors>().GetAction<Flower>();
+                if (flower != null)
                 {
-                    GetComponent<WaterState>().Watered = false;
+                    flower.Done = false;
+                }
 
-                    var flower = GetComponent<Behaviors>().GetAction<Flower>();
-                    if (flower != null)
-                    {
-                        flower.Done = false;
-                    }
-
-                    var blueFlower = GetComponent<Behaviors>().GetAction<FlowerBlue>();
-                    if (blueFlower != null)
-                    {
-                        blueFlower.Done = false;
-                    }
+                var blueFlower = GetComponent<Behaviors>().GetAction<FlowerBlue>();
+                if (blueFlower != null)
+                {
+                    blueFlower.Done = false;
                 }
             }
         }
+    }
 
-        public void Reset()
+    public void Reset()
+    {
+        var mirror = FindObjectOfType<Mirror>();
+
+        if (AllActions.Any(x => x.Available))
         {
-            var mirror = FindObjectOfType<Mirror>();
-
-            if (AllActions.Any(x => x.Available))
+            foreach (var action in AllActions.Where(x => x.Active))
             {
-                foreach (var action in AllActions.Where(x => x.Active))
-                {
-                    action.Active = false;
-                    mirror.RemoveSelection(action._owner, action.Name);
-                }
-            }
-
-            if (AllTriggers.Any(x => x.Available))
-            {
-                foreach (var trigger in AllTriggers.Where(x => x.Active))
-                {
-                    trigger.Active = false;
-                    mirror.RemoveSelection(trigger._owner, trigger.Name);
-                }
+                action.Active = false;
+                mirror.RemoveSelection(action._owner, action.Name);
             }
         }
 
-        public virtual void ResetUI()
+        if (AllTriggers.Any(x => x.Available))
         {
-            Active = false;
-            foreach (var behavior in AllBehaviors)
+            foreach (var trigger in AllTriggers.Where(x => x.Active))
             {
-                behavior.Reset();
+                trigger.Active = false;
+                mirror.RemoveSelection(trigger._owner, trigger.Name);
             }
         }
+    }
 
-        public bool StartTrigger;
-
-        public void Initialize()
+    public virtual void ResetUI()
+    {
+        Active = false;
+        foreach (var behavior in AllBehaviors)
         {
-            AllTriggers = new Trigger[]
-            {
+            behavior.Reset();
+        }
+    }
+
+    public bool StartTrigger;
+
+    public void Initialize()
+    {
+        AllTriggers = new Trigger[]
+        {
                 new Up(gameObject),
                 new Down(gameObject),
                 new Right(gameObject),
@@ -103,10 +95,10 @@ namespace Assets.Scripts.World.Tile
                 new DownLeft(gameObject),
                 new Cross(gameObject),
                 new BridgeUpDown(gameObject)
-            };
+        };
 
-            AllActions = new Action[]
-            {
+        AllActions = new Action[]
+        {
                 new Water(gameObject),
                 new Flower(gameObject),
                 new FlowerBlue(gameObject),
@@ -115,84 +107,90 @@ namespace Assets.Scripts.World.Tile
                 new Key(gameObject),
                 new BlackHole(gameObject),
                 new Bacteria(gameObject)
-            };
+        };
+    }
+
+    public T GetAction<T>() where T : Action
+    {
+        return AllActions.OfType<T>().FirstOrDefault();
+    }
+
+    public T GetTrigger<T>() where T : Trigger
+    {
+        return AllTriggers.OfType<T>().FirstOrDefault();
+    }
+
+    internal Action GetAction(string name)
+    {
+        return AllActions.FirstOrDefault(x => x.Name == name);
+    }
+
+    internal Trigger GetTrigger(string name)
+    {
+        return AllTriggers.FirstOrDefault(x => x.Name == name);
+    }
+
+    internal BehaviorBase GetBehavior(string name)
+    {
+        return AllBehaviors.FirstOrDefault(x => x.Name == name);
+    }
+
+    internal bool IsAvailableBridgeTile()
+    {
+        return GetBehavior("BridgeUpDown").Available || GetBehavior("BridgeUpDown").Active;
+    }
+
+    internal BehaviorBase[] GetBehaviorList(BehaviorTypes behaviorType)
+    {
+        if (behaviorType == BehaviorTypes.Triggers)
+        {
+            return AllTriggers;
+        }
+        if (behaviorType == BehaviorTypes.Actions)
+        {
+            return AllActions;
         }
 
-        public T GetAction<T>() where T : Action
+        return new BehaviorBase[0];
+    }
+
+    public bool HasActiveWinCondition()
+    {
+        return GetAction<Flower>().Active;
+    }
+
+    public bool UpdateTrigger()
+    {
+        if (!Active && AllTriggers.Where(x => x.Active).Any(x => x.Check()))
         {
-            return AllActions.OfType<T>().FirstOrDefault();
+            Active = true;
+            return true;
         }
 
-        public T GetTrigger<T>() where T : Trigger
-        {
-            return AllTriggers.OfType<T>().FirstOrDefault();
-        }
+        return false;
+    }
 
-        internal Action GetAction(string name)
+    public bool UpdateActions()
+    {
+        if (Active)
         {
-            return AllActions.FirstOrDefault(x => x.Name == name);
-        }
-
-        internal Trigger GetTrigger(string name)
-        {
-            return AllTriggers.FirstOrDefault(x => x.Name == name);
-        }
-
-        internal BehaviorBase GetBehavior(string name)
-        {
-            return AllBehaviors.FirstOrDefault(x => x.Name == name);
-        }
-
-        internal bool IsAvailableBridgeTile()
-        {
-            return GetBehavior("BridgeUpDown").Available || GetBehavior("BridgeUpDown").Active;
-        }
-
-        internal BehaviorBase[] GetBehaviorList(BehaviorTypes behaviorType)
-        {
-            if (behaviorType == BehaviorTypes.Triggers)
+            var activeActions = AllActions.Where(x => x.Active);
+            foreach (var item in activeActions)
             {
-                return AllTriggers;
+                item.Execute(gameObject);
             }
-            if (behaviorType == BehaviorTypes.Actions)
+
+            // Water if no actions is set
+            if (!activeActions.Any())
             {
-                return AllActions;
+                GetComponent<WaterState>().Watered = true;
             }
 
-            return new BehaviorBase[0];
+            return true;
         }
-
-        public bool HasActiveWinCondition()
+        else
         {
-            return GetAction<Flower>().Active;
-        }
-
-        public void UpdateTrigger()
-        {
-            if (AllTriggers.Where(x => x.Active).Any(x => x.Check()))
-            {
-                Active = true;
-            }
-        }
-
-        public void UpdateActions()
-        {
-            if (Active)
-            {
-                var activeActions = AllActions.Where(x => x.Active);
-                foreach (var item in activeActions)
-                {
-                    item.Execute(gameObject);
-                }
-
-                // Water if no actions is set
-                if (!activeActions.Any())
-                {
-                    GetComponent<WaterState>().Watered = true;
-                }
-            }
+            return false;
         }
     }
 }
-
-

@@ -27,11 +27,13 @@ namespace UnityStandardAssets.ImageEffects
         public Shader blurShader = null;
 
         static Material m_Material = null;
-        protected Material material {
+        protected Material Material {
             get {
                 if (m_Material == null) {
-                    m_Material = new Material(blurShader);
-                    m_Material.hideFlags = HideFlags.DontSave;
+                    m_Material = new Material(blurShader)
+                    {
+                        hideFlags = HideFlags.DontSave
+                    };
                 }
                 return m_Material;
             }
@@ -53,7 +55,7 @@ namespace UnityStandardAssets.ImageEffects
                 return;
             }
             // Disable if the shader can't run on the users graphics card
-            if (!blurShader || !material.shader.isSupported) {
+            if (!blurShader || !Material.shader.isSupported) {
                 enabled = false;
                 return;
             }
@@ -63,7 +65,7 @@ namespace UnityStandardAssets.ImageEffects
         public void FourTapCone (RenderTexture source, RenderTexture dest, int iteration)
         {
             float off = 0.5f + iteration*blurSpread;
-            Graphics.BlitMultiTap (source, dest, material,
+            Graphics.BlitMultiTap (source, dest, Material,
                                    new Vector2(-off, -off),
                                    new Vector2(-off,  off),
                                    new Vector2( off,  off),
@@ -75,7 +77,7 @@ namespace UnityStandardAssets.ImageEffects
         private void DownSample4x (RenderTexture source, RenderTexture dest)
         {
             float off = 1.0f;
-            Graphics.BlitMultiTap (source, dest, material,
+            Graphics.BlitMultiTap (source, dest, Material,
                                    new Vector2(-off, -off),
                                    new Vector2(-off,  off),
                                    new Vector2( off,  off),

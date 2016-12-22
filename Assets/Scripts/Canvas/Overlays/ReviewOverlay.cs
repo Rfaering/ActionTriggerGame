@@ -1,43 +1,36 @@
-﻿using Assets.Scripts.Canvas.Elements;
-using Assets.Scripts.Stats;
-using Assets.Scripts.World;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.Canvas.Overlays
+public class ReviewOverlay : MonoBehaviour
 {
-    public class ReviewOverlay : MonoBehaviour
+    private OverlayManager _overlayManager;
+
+    public void Start()
     {
-        private OverlayManager _overlayManager;
+        _overlayManager = GetComponentInParent<OverlayManager>();
+    }
 
-        public void Start()
-        {
-            _overlayManager = GetComponentInParent<OverlayManager>();
-        }
+    public void Send()
+    {
+        var levelName = FindObjectOfType<LoadLevel>().CurrentLevelName;
 
-        public void Send()
-        {
-            var levelName = FindObjectOfType<LoadLevel>().CurrentLevelName;
+        var note = transform.Find("InputField").GetComponent<InputField>().text;
 
-            var note = transform.Find("InputField").GetComponent<InputField>().text;
+        LevelReview.SendLevelReview(levelName, note);
 
-            LevelReview.SendLevelReview(levelName, note);
+        GoBackInternal().ReviewSent();
+    }
 
-            GoBackInternal().ReviewSent();
-        }
+    public void GoBack()
+    {
+        GoBackInternal();
+    }
 
-        public void GoBack()
-        {
-            GoBackInternal();
-        }
+    private WinOverlay GoBackInternal()
+    {
+        transform.Find("InputField").GetComponent<InputField>().text = string.Empty;
 
-        private WinOverlay GoBackInternal()
-        {
-            transform.Find("InputField").GetComponent<InputField>().text = string.Empty;
-
-            _overlayManager.CloseActiveOverlay();
-            return _overlayManager.OpenWinnerOverlay();
-        }
+        _overlayManager.CloseActiveOverlay();
+        return _overlayManager.OpenWinnerOverlay();
     }
 }
-

@@ -3,37 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
-namespace Assets.Scripts.Tile
+public class WaterState : MonoBehaviour
 {
-    public class WaterState : MonoBehaviour
+
+    #region Death
+    private bool _watered;
+    public bool Watered
     {
-
-        #region Death
-        private bool _watered;
-        public bool Watered
+        get { return _watered; }
+        set
         {
-            get { return _watered; }
-            set
-            {
-                _watered = value;
-                UpdateDeath();
+            _watered = value;
+            UpdateDeath();
 
-            }
         }
-
-        private void UpdateDeath()
-        {
-            if (!Watered)
-            {
-                gameObject.GetComponent<Animation>().Stop();
-                transform.Find("Foreground").GetComponent<SpriteRenderer>().color = new Color(0.8f, 0.8f, 0.8f);
-            }
-            else
-            {
-                gameObject.GetComponent<Animation>().Blend("KillAnimation");
-            }
-        }
-        #endregion
     }
+
+    private void UpdateDeath()
+    {
+        if (!Watered)
+        {
+            gameObject.GetComponent<Animation>().Stop();
+            transform.Find("Foreground").GetComponent<Image>().color = new Color(0.8f, 0.8f, 0.8f);
+        }
+        else
+        {
+            gameObject.GetComponent<Animation>().Blend("KillAnimation");
+        }
+    }
+    #endregion
 }

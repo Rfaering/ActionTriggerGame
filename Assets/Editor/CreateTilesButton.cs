@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using Assets.Scripts.World;
 
 [CustomEditor(typeof(CreateTiles))]
 public class CreateTilesButton : Editor

@@ -1,17 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
-using Assets.Scripts.Actions;
-using Assets.Scripts.Utils;
-using Assets.Scripts.Canvas.Elements;
-using Assets.Scripts.World.Tile;
-using Assets.Scripts.Tile;
-using Assets.Scripts.Stats;
-using Assets.Scripts.World;
-using Assets.Scripts.Levels;
-using Assets.Scripts.Tile.Behavior;
-using Assets.Scripts.Tile.Behavior.Triggers.Directions;
-using Assets.Scripts.Buttons;
 
 public class Runner : MonoBehaviour
 {
@@ -92,6 +81,7 @@ public class Runner : MonoBehaviour
                 // Only run win condition if the game is not in build mode                
                 if (!GlobalProperties.IsInBuildMode() && IsLoosingConditionMet())
                 {
+                    PlayLooseAnimation();
                     yield return new WaitForSeconds(1.5f);
                     StopRunning();
                 }
@@ -104,7 +94,13 @@ public class Runner : MonoBehaviour
                 {
                     number++;
                     FindObjectOfType<Number>().SetRoundNumber(number);
-                    RunSingleRound();
+                    var hasProgressed = RunSingleRound();
+                    if (!hasProgressed && !GlobalProperties.IsInBuildMode())
+                    {
+                        PlayLooseAnimation();
+                        yield return new WaitForSeconds(1.5f);
+                        StopRunning();
+                    }
                 }
             }
         }
@@ -134,42 +130,49 @@ public class Runner : MonoBehaviour
     }
 
 
-    private void RunSingleRound()
+    private bool RunSingleRound()
     {
-        var components = GetComponentsInChildren<Behaviors>();
-        foreach (var item in components)
+        var hasUpdated = false;
+        var tiles = GetComponentsInChildren<Behaviors>();
+
+        foreach (var item in tiles)
         {
-            item.UpdateTrigger();
+            hasUpdated |= item.UpdateTrigger();
         }
-        var blackHoles = GetActions<BlackHole>(components);
+
+        var blackHoles = GetActions<BlackHole>(tiles);
 
         if (blackHoles.Any(x => x.IsBlackholeActive))
         {
-            foreach (var item in blackHoles)
+            foreach (var item in blackHoles.Where(x => !x._owner.GetComponent<Behaviors>().Active))
             {
                 item._owner.GetComponent<Behaviors>().Active = true;
+                hasUpdated = true;
             }
         }
 
-        foreach (var item in components)
+        foreach (var item in tiles)
         {
             var bridge = item.GetComponent<SelectedBehavior>().SelectedTrigger as BridgeUpDown;
             if (bridge != null && bridge.IsGoingToExecuteWaterFlow)
             {
                 bridge.ExecuteUnderWaterFlow();
+                hasUpdated = true;
             }
 
             if (!item.GetComponent<WaterState>().Watered)
             {
-                item.UpdateActions();
+                hasUpdated |= item.UpdateActions();
             }
         }
 
-        var bacterias = GetActions<Bacteria>(components);
+        var bacterias = GetActions<Bacteria>(tiles);
         foreach (var item in bacterias)
         {
             item.Move();
         }
+
+        return hasUpdated;
     }
 
     private static System.Collections.Generic.IEnumerable<T> GetActions<T>(Behaviors[] components) where T : class
@@ -200,6 +203,37 @@ public class Runner : MonoBehaviour
         return redFlower.All(x => x.Done) && blueFlowers.All(x => x.Done);
     }
 
+    private void PlayLooseAnimation()
+    {
+        var components = GetComponentsInChildren<Behaviors>();
+
+        var normalFlowers = components
+            .Select(x => x.GetAction<Flower>())
+            .Where(x => x.Active)
+            .ToArray();
+
+        var blueFlowers = components
+            .Select(x => x.GetAction<FlowerBlue>())
+            .Where(x => x.Active)
+            .ToArray();
+
+        foreach (var item in normalFlowers)
+        {
+            if (!item.Done)
+            {
+                item._owner.GetComponent<Animation>().Blend("Highlight");
+            }
+        }
+
+        foreach (var item in blueFlowers)
+        {
+            if (!item.Done)
+            {
+                item._owner.GetComponent<Animation>().Blend("Highlight");
+            }
+        }
+    }
+
     private bool IsLoosingConditionMet()
     {
         var components = GetComponentsInChildren<Behaviors>();
@@ -221,14 +255,6 @@ public class Runner : MonoBehaviour
         {
             if (!normalFlowers.All(x => x.Done))
             {
-                foreach (var item in normalFlowers)
-                {
-                    if (!item.Done)
-                    {
-                        item._owner.GetComponent<Animation>().Blend("Highlight");
-                    }
-                }
-
                 result = true;
             }
         }
@@ -237,14 +263,6 @@ public class Runner : MonoBehaviour
         {
             if (!blueFlowers.All(x => x.Done))
             {
-                foreach (var item in blueFlowers)
-                {
-                    if (!item.Done)
-                    {
-                        item._owner.GetComponent<Animation>().Blend("Highlight");
-                    }
-                }
-
                 result = true;
             }
         }

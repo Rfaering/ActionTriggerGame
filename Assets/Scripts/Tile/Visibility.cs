@@ -1,65 +1,69 @@
-﻿using Assets.Scripts.Utils;
+﻿
 using UnityEngine;
 
-namespace Assets.Scripts.Tile
+public class Visibility : MonoBehaviour
 {
-    public class Visibility : MonoBehaviour
+    public bool IsVisible;
+    public GameObject visibilityIcon;
+
+    private GameObject background;
+    private GameObject foreground;
+
+    public void Start()
     {
-        public bool IsVisible;
-        public GameObject visibilityIcon;
+        visibilityIcon = transform
+                    .Find("Visible")
+                    .gameObject;
 
-        public void Start()
+        foreground = gameObject.transform.FindChild("Foreground").gameObject;
+        background = gameObject.transform.FindChild("Background").gameObject;
+    }
+
+    public void Update()
+    {
+        UpdateInput();
+        UpdateVisiblity();
+    }
+
+    private void UpdateInput()
+    {
+        if (GlobalProperties.IsInBuildMode() &&
+            !GlobalProperties.IsOverlayPanelOpen &&
+            GetComponent<TileSelection>().Selected &&
+            Input.GetKeyDown(KeyCode.V))
         {
-            visibilityIcon = transform
-                        .Find("Visible")
-                        .gameObject;
+            IsVisible = !IsVisible;
         }
 
-        public void Update()
+    }
+
+    public void UpdateVisiblity()
+    {
+        if (visibilityIcon == null)
         {
-            UpdateInput();
-            UpdateVisiblity();
+            return;
         }
 
-        private void UpdateInput()
+        if (IsVisible)
         {
-            if (GlobalProperties.IsInBuildMode() &&
-                !GlobalProperties.IsOverlayPanelOpen &&
-                GetComponent<Selection>().Selected &&
-                Input.GetKeyDown(KeyCode.V))
-            {
-                IsVisible = !IsVisible;
-            }
-
+            visibilityIcon.SetActive(false);
         }
-
-        public void UpdateVisiblity()
+        else
         {
-            if (visibilityIcon == null)
+            if (GlobalProperties.IsInBuildMode())
             {
-                return;
-            }
+                if (!isActiveAndEnabled)
+                {
+                    gameObject.SetActive(true);
+                }
 
-            if (IsVisible)
-            {
-                visibilityIcon.SetActive(false);
+                visibilityIcon.SetActive(true);
             }
             else
             {
-                if (GlobalProperties.IsInBuildMode())
-                {
-                    if (!isActiveAndEnabled)
-                    {
-                        gameObject.SetActive(true);
-                    }
-
-                    visibilityIcon.SetActive(true);
-                }
-                else
-                {
-
-                    gameObject.SetActive(false);
-                }
+                background.SetActive(false);
+                foreground.SetActive(false);
+                visibilityIcon.SetActive(false);
             }
         }
     }

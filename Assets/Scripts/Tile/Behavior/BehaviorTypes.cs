@@ -1,4 +1,1 @@
-﻿namespace Assets.Scripts.Misc
-{
-    public enum BehaviorTypes { Triggers, Actions }
-}
+﻿public enum BehaviorTypes { Triggers, Actions }
