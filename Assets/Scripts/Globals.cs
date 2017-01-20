@@ -18,6 +18,6 @@ public static class Globals
         public static BuilderMode BuildMode = BuilderMode.DesignMode;
 #endif
 
-    public static int InitialLevel = 6;
+    public static int InitialLevel = 5;
     public static int MaxLevel = 48;
 }

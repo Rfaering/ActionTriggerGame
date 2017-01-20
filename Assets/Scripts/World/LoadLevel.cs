@@ -8,12 +8,34 @@ public class LoadLevel : MonoBehaviour
     public string CurrentLevelName = "Level 1";
     private CanvasMenu _menu;
 
+    [Range(1, 50)]
+    public int Level;
+    private int _level;
+
     public void Start()
     {
         _levelInfoManager = GetComponent<LevelInfoManager>();
         _menu = FindObjectOfType<CanvasMenu>();
-        CurrentLevelName = string.Format("Level {0:000}", Globals.InitialLevel);
+
+        Level = Globals.InitialLevel;
+        _level = Level;
+
+        LoadSetLevel();
+    }
+
+    private void LoadSetLevel()
+    {
+        CurrentLevelName = string.Format("Level {0:000}", _level);
         LoadCurrentLevel();
+    }
+
+    public void Update()
+    {
+        if (_level != Level)
+        {
+            _level = Level;
+            LoadSetLevel();
+        }
     }
 
     public void LoadCurrentLevel()
